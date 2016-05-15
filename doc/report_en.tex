@@ -1,0 +1,109 @@
+\documentclass{extreport}
+
+\usepackage{amssymb, latexsym, amsmath}
+
+\begin{document}
+
+\section{NMF}
+
+\[
+  V = 
+  \begin{bmatrix}
+    1 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 1 & 0 & 0 \\
+    1 & 1 & 0 & 1 \\
+  \end{bmatrix}
+  \approx WH =
+  \begin{bmatrix}
+    & & \\
+    & & \\
+    & & \\
+    & & \\
+  \end{bmatrix}
+  \times
+  \begin{bmatrix}
+    & & & & \\
+    & & & & \\
+  \end{bmatrix}
+\]
+
+\[
+  W =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 1 \\
+    0 & 0 \\
+    0 & 0 \\
+  \end{bmatrix} \quad
+  H =
+  \begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+  \end{bmatrix} \quad
+  V' =
+  \begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 \\
+  \end{bmatrix}
+\]
+
+\[
+  N = \sum_{ij}
+  \left(
+    V_{ij} - (WH)_{ij}
+  \right)^2
+  = 7 \geqslant 0
+\]
+
+\[
+  N(h_j) = \sum_{i}
+  \left(
+    V_{ij} - \sum_{k}W_{ik}H_{kj}
+  \right)^2
+\]
+
+where $h_j$ is $j$th column of matrix $H$
+
+\[
+  \frac{\partial N(h_j)}{\partial H_{sj}} =
+  -2 \sum_i
+    \left(
+      V_{ij} - \sum_k W_{ik}H_{kj}
+    \right)
+  W_{is} =
+  -2
+    \left(
+      \sum_i W_{is}V_{ij} - \sum_i\sum_kW_{ik}W_{is}H_{kj}
+    \right)
+\]
+
+\[
+  \nabla N(H) = -2 ( W^TV - W^TWH )
+\]
+
+\[
+  N(w_i) = \sum_j \left( V_{ij} - \sum_k W_{ik}H_{kj} \right)^2
+\]
+
+where $w_i$ is $i$th row of matrix $W$
+
+\[
+  \frac{\partial N(w_i)}{\partial W_{ia}} =
+  -2 \sum_j
+    \left(
+      V_{ij} - \sum_k W_{ik}H_{kj}
+    \right)
+  H_{aj} =
+  -2
+    \left(
+      \sum_j H_{aj}V_{ij} - \sum_j \sum_k W_{ik}H_{kj}H_{aj}
+    \right)
+\]
+
+\[
+  \nabla N(W) = -2 ( VH^T - WHH^T )
+\]
+\end{document}
