@@ -6,6 +6,8 @@ function simple_analysis_1()
   V1 = V(1:100,:);
   FV1 = V1 >= 1.4e+3;
 
-  %meshc(FV1 .* ones(size(FV1)));
-  image(FV1); colormap([1 1 1; 0 0 0]);
+  set(gcf, 'Visible','off');
+  i = image(FV1); colormap([1 1 1; 0 0 0]);
+  print(gcf(), 'build/spectrum.png');
+  close();
 end

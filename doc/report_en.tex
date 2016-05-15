@@ -1,13 +1,14 @@
 \documentclass{extreport}
 
 \usepackage{amssymb, latexsym, amsmath}
+\usepackage{graphicx}
 
 \begin{document}
 
 \section{NMF}
 
 \[
-  V = 
+  V =
   \begin{bmatrix}
     1 & 1 & 0 & 0 \\
     0 & 0 & 1 & 0 \\
@@ -106,4 +107,169 @@ where $w_i$ is $i$th row of matrix $W$
 \[
   \nabla N(W) = -2 ( VH^T - WHH^T )
 \]
+
+\section{Auxiliary function and an update rule}
+
+Let's $G(h, h^t)$ is an auxiliary function for $F(h)$ iff
+\[
+  G(h,h^t) \geqslant F(h) \quad \text{and}
+  G(h,h^t) = F(h) \iff h = h^t
+\]
+
+\textbf{Lemma} 1.
+
+$F(h^t)$ is not increasing under an update rule:
+\[
+  h^{t+1} = \text{arg} \, \underset{h}{\text{min}} \; G(h,h^t)
+\]
+
+\[
+  \rhd \quad
+    F(h^{t+1}) \leqslant G(h^{t+1},h^t) \leqslant G(h^t,h^t) = F(h^t) \quad
+  \lhd
+\]
+
+Let's $K_{ab}(h) =
+  \delta_{ab}
+  (\underbrace{W^T W h}_{\substack{\text{this is a}\\ \text{vector}}})_a
+  / h_a$.
+
+Then
+
+\textbf{Lemma} 2.
+$G(h,h^t) = F(h^t) + (h - h^t)^T \nabla F(h^t)
+  + \frac{1}{2} (h - h^t)^T K(h^t) (h - h^t)$
+is an auxiliary function for $F(h)$.
+
+$\rhd$
+
+$$F(h) \approx F(h^t) + (h - h^t)^T \nabla F(h^t)
+  + \frac{1}{2} (h - h^t)^T (W^TW) (h - h^t)$$
+
+$$G(h,h^t) \geqslant F(h) \iff
+\frac{1}{2} (h - h^t)^T \left[K(h^t) - W^TW\right] (h - h^t)
+\geqslant O(||h - h^t||^2)$$
+
+It is equivalent to positive semidefiniteness of a quadratic form
+$$(K(h^t) - W^TW)$$
+
+Let's $M_{ab} = h_a^t (K(h^t) - W^T W)_{ab} h_b^t$.
+It is just rescaling of the quadratic form components.
+
+\[
+  E =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 1 \\
+  \end{bmatrix}, \;
+  h = \begin{bmatrix} -2 \\ 3 \end{bmatrix};
+\]
+
+\begin{align*}
+  M_{11} = h_1 E_{11} h_1 = 4; \\
+  M_{12} = h_1 E_{12} h_2 = 0; \\
+  M_{21} = h_2 E_{21} h_1 = 0; \\
+  M_{22} = h_2 E_{22} h_2 = 9; \\
+\end{align*}
+$$ S = \text{diag}\{h_j\}; \quad S^T A S \rightarrow B$$
+where $B$ is a rescaled quadratic form $A$.
+
+So $K(h^t) - W^TW \geqslant 0 \iff M \geqslant 0$.
+
+\begin{multline*}
+  v^t M v =
+  \sum_{a,b}v_a h_a^t (\delta_{ab}(W^TWh^t)_a / h_a^t
+  -(W^TW)_{ab})h_b^t v_b \\
+  =
+  \left[
+    \delta_{ab}
+    \left(
+      \begin{bmatrix}1 & 1 \\ 2 & 0 \\ \end{bmatrix} \times
+      \begin{bmatrix}1 & 2 \\ 1 & 0 \\ \end{bmatrix} \times
+      \begin{bmatrix} -2 \\ 3 \end{bmatrix}
+    \right) =
+      \begin{bmatrix}2 & 2 \\ 2 & 2 \\ \end{bmatrix} \times
+      \begin{bmatrix} -2 \\ 3 \end{bmatrix} =
+      \begin{bmatrix} 2 \\ 2 \end{bmatrix}
+  \right] \\
+  =
+  \left[
+    \delta((W^TWh^t)_a / h_a^t) =
+    \frac{1}{h_a^t} \sum_k (W^TW)_{ak} h_k^t
+  \right] \\
+  =
+  \sum_a v_a^2 {h_a^t}^2 (\sum_k(W^TW)_{ak}h_k^t)/h_a^t -
+    \sum_{a,b} v_ah_a^t(W^TW)_{ab}h_b^tv_b \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a^2 - v_av_b) \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(
+    \frac{1}{2}v_a^2 + \frac{1}{2}v_b^2 - v_av_b) \\
+  = \frac{1}{2} \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a - v_a)^2 \geqslant 0 \\
+\end{multline*}
+
+\section{Simple signal}
+
+\[
+  s(t) = g(\alpha t) sin(\gamma t) + g(\beta t) sin(\delta t)
+\]
+
+where $g(\cdot)$ is a gate function with a period $2\pi$.
+
+\[
+  g(t) =
+  \begin{cases}
+    1, & 0 \leqslant \left( t + \frac{\pi}{2} \right)
+      \; \text{mod} \; \pi \leqslant \pi \\
+    0, & otherwise
+  \end{cases}
+\]
+
+$$t = linspace(0, 0.3, round(0.3 \cdot 44100))$$
+
+$$\gamma = 440 \cdot 2 \pi$$
+
+$$\alpha = 2 \pi \cdot \frac{1}{0.3} \cdot 3$$
+
+$$\delta = \textbf{E4} \cdot 2 \pi$$
+
+$$\beta = \frac{2 \pi}{0.3} \cdot 2$$
+
+$$\textbf{E4} = 440 \cdot 2^{-\frac{5}{12}}$$
+
+\begin{figure}
+  \includegraphics*[clip, scale=.6]{build/spectrum.png}
+  \caption{Matrix~$V$ of a resulting signal.
+  It depicts spectrogram over a time.}
+\end{figure}
+
+Each cell of $V$ --- $v_{ij}$ shows amplitude
+of a signal component with a frequency $i$
+at a time moment $j$.
+
+In practice $j$ reflects time window of a width
+let's say 2048 or 4096 $= L$ samples.
+
+$i$ varies between $1, \dots, \left\lfloor \frac{L}{2}+1 \right\rfloor$.
+$j$ varies between $1, \dots, \left\lceil \frac{length(s)}{L} \right\rceil$.
+
+$$s = \text{simple\_signal\_1}$$
+
+$$V = \text{getspectrum}(s,4096 = L)$$
+
+$$V1 = V(1:100,:)$$
+
+It is part $V$ with frequencies from 1 to 100 (measure is unknown,
+but looks~like $\approx$ 10 Hz).
+
+$$\text{mesh} = (V1)$$
+
+$$FV = V1 \geqslant 1.4e+3$$
+
+$$V2 = V1 .*  V$$
+
+(this is selection from $V$ by amplitude threshold in $1.4 \cdot 10^3$)
+
+$$\text{mesh}(V2)$$
+
+$$\text{image}(FV); \text{colormap}([1, 1, 1; 0, 0, 0])$$
+
 \end{document}
