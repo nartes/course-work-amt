@@ -1,4 +1,5 @@
 \documentclass[oneside, final, 14pt]{extarticle}
+% rewrite with extreport
 \usepackage[utf8]{inputenc}
 \usepackage[russianb]{babel}
 \usepackage[paper=a4paper, left=3cm, top=2cm, bottom=2cm, right=1cm]{geometry}
@@ -50,7 +51,7 @@
 \end{minipage}
 \vfill
 \vfill
-\centerline{\large \bf Минск 2015}
+\centerline{\large \bf Минск 2016}
 
 \restoregeometry
 
@@ -96,6 +97,8 @@
 
 \tableofcontents
 \cleardoublepage
+
+\part{Использование преобразования Фурье для ручного анализа музыки}
 
 \section{Введение}
   Автоматическая музыкальная транскрпция, т.е. анализ записи музыкального произведения
@@ -325,6 +328,136 @@
   что частоты соседних нот G3\# $-$ 208Гц, A3\# $-$ 233Гц, то это нота A3.
 
 \cleardoublepage
+\part{Использование NMF для распознавания музыки}
+\section{NMF алгоритм}
+\subsection{NMF}
+
+Рассматривается алгоритм для решение следующей задачи:
+
+Non-negative matrix factorization(NMF) Given a non-negative matrix
+V, find non-negative matrix factors W and H such that:
+\begin{equation}
+    V \approx W H
+\end{equation}
+
+NMF can be applied to the statistical analysis of multivariate data
+in the following manner.
+Given a set of multivariate n-dimnesional data vectors, the vectors
+are placed in the columns of an n x m matrix V
+where m is the number of examples in the data set.
+This matrix is then approximately factorized into an n x r matrix
+W and an r x m matrix H.
+Usually $r$ is chosen to be smaller than $n$ or $m$,
+so that $W$ and $H$ are smaller than the original matrix $V$.
+This results in a compressed version of the original data matrix.
+
+Most significant idea in Eq.(1) is the following. It can be rewritten
+column by column as $v \approx W h$, where $v$ and $h$ are the
+corresponding columns of $V$ and $H$.
+In other words, each data vector $v$ is approximated by a linear
+combination of the columns of $W$, weighted by the components of $H$.
+Therefore $W$ can be regarded as containing a basis
+that is optimized for the linear approximation of the data in V.
+Since relatively few basis vectors are used to represent
+many data vectors, good approximation
+can only be achieved if the basis vectors discover structure that is
+latent in the data.
+
+\subsection{Cost functions}
+
+To find an approximate factorization $V \approx WH$, we first need
+to define cost functions that quantify the quality of the
+approximation. Such a cost function can be constructed using some
+measure of distance between two non-negative matrices $A$ and $B$.
+One useful measure is simply the square of the Euclidean distance
+between $A$ and $B$,
+\begin{equation}
+  ||A - B||^2 = \sum_{ij}(A_{ij}-B_{ij})^2
+\end{equation}
+
+Рассматривается следующая формулировка NMF как задачи оптимизации:
+
+Problem 1 Minimize $||V - W H ||^2$ with respect to $W$ and $H$,
+subject to the constraints $W, H \geqslant 0$
+
+Хотя функция $||V - WH||^2$ выпукла по отношению к $W$ только или
+$H$ только, она не выкла по отношению к обоим переменным вместе.
+Therefore it is unrealistic to expect an algorithm
+to solve Problem $1$ in the sence of finding the sense of finding
+global minima. However, there are many techniques from numerical
+optimzation that can be applied to find local minima.
+
+\subsection{Multiplicative update rules}
+
+Theorem 1 The Euclidean distance $||V - WH||$ is nonincreasing under
+the update rules
+\begin{equation}
+  H_{\alpha\mu} \leftarrow H_{\alpha\mu}
+  \frac{(W^TV)_{\alpha\mu}}{(W^TWH)_{\alpha\mu}} \quad
+  W_{i\alpha} \leftarrow W_{i\alpha}
+  \frac{(VH^T)_{i\alpha}}{(WHH^T)_{i\alpha}}
+\end{equation}
+
+\subsection{Multplicative versus additive update rules}
+It is useful to contrast these multiplicative updates with those
+arising from gradient descent. In particular, a simple additive
+update for $H$ that reduces the squared distance can be written
+as
+\begin{equation}
+  H_{\alpha\mu} \leftarrow H_{\alpha\mu} + \gamma [
+    (W^TV)_{\alpha\mu} - (W^TWH)_{\alpha\mu}
+  ]
+\end{equation}
+
+If $\gamma$ are all set equal to some small positive number, this is
+equivalent to conventional gradient descent. As long as this number
+is sufficiently small. the update should reduce $||V-WH||$.
+
+Now if we diagonally rescale the variables and set
+\begin{equation}
+  \gamma = \frac{H_{\alpha\mu}}{(W^TWH)_{\alpha\mu}}
+\end{equation}
+then we obtain the update rule for H that is given in Theorem 1.
+Note that this rescaling results in a multiplicative factor with
+the positive component of the gradient in the denominator
+and the absolute value of the negative component in the numberator
+of the factor.
+
+\subsection{Proofs of convergence}
+To prove Theorem 1, we will make use of an auxiliary function
+similar to that used in the Expectation-Maximation algorithm.
+
+Definition 1 $G(h, h')$ is an auxiliary function for $F(h)$ if the
+conditions
+\begin{equation}
+  G(h,h') \geqslant F(h), \quad G(h,h) = F(H)
+\end{equation}
+are satisfied.
+
+The auxiliary function is a usefull concept because of the following
+lemma, which is also graphically illustrated in Fig. 4.
+
+Lemma 1 if $G$ is an auxiliary functions, then $F$ is nonincreasing
+under the update
+\begin{equation}
+  h^{t+1} = \text{arg min} G(h, h^t)
+\end{equation}
+
+Proof: $F(h^{t+1}) \geqslant G(h^{t+1},h^t) \geqslant G(h^t, h^t)
+= F(h^t)$.
+
+Note that $F(h^{t+1}) = F(h^t)$ only if $h^t$ is a local minimum of
+$G(h,h^t)$. If the derivatives of $F$ exist and are continuous in
+a small neighborhoood of $h^t$, this also implies that
+the derivatives of $F$ equal 0. Thus, by iterating the update in
+Eq. (7) we obtain a sequence of estimates that converge to a local
+minimum $h_{min} = \text{arg min} F(h)$ of the objective function:
+\begin{equation}
+  F(h_{min}) \leqslant \cdots F(h^{t+1}) \leqslant F(h_2)
+  \leqslant F(h_1) \leqslant (F(h_0)
+\end{equation}.
+
+\cleardoublepage
 
 {\large \bf Заключение \\}
 \addcontentsline{toc}{section}{Заключение}
@@ -359,6 +492,8 @@
   \bibitem{PMTPS} Paris Smaragdis, Judith C. Brown,
     Non-Negative Matrix Factorization
     for Polyphonic Music Trascription, October 19-22, 2003
+
+  \bibitem{QUUX} http://www.quuxlabs.com/blog/2010/09/matrix-factorization-a-simple-tutorial-and-implementation-in-python/
 
 \end{thebibliography}
 
