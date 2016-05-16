@@ -97,7 +97,7 @@ Now let's find a gradient of $F$ in respond to $H$ and $W$ separetly.
   \nabla F(W) = - ( VH^T - WHH^T )
 \]
 
-Then common gradient descent updates rule will be:
+Then common gradient descent updates rules will be:
 \begin{align*}
   H_{\alpha\mu} \leftarrow H_{\alpha\mu} +
   \eta_{\alpha\mu} \left[
@@ -111,6 +111,64 @@ Then common gradient descent updates rule will be:
 
 Here $\eta_{\alpha\mu}$ and $\zeta_{i\alpha}$ must be such parameters
 that guarantee the convergens of the iterative process.
+
+\subsubsection{Theorem (Multiplicative update rules)}
+
+\textbf{Theorem} The cost function $F$ in not increasing under
+the update
+\[
+  H_{\alpha\mu} \leftarrow H_{\alpha\mu}
+  \frac{(W^TV)_{\alpha\mu}}{(W^TWH)_{\alpha\mu}} \quad
+  W_{i\alpha} \leftarrow W_{i\alpha}
+  \frac{(VH^T)_{i\alpha}}{(WHH^T)_{i\alpha}}
+\]
+
+The cost function $F$ is invariant under these update rules if and only if
+$W$ and $H$ are at a staionary point of $F$.
+
+Before a proof auxiliary function definition will be introduced. As well as
+two lemma with their proofs.
+
+\textbf{Definition} $G(h,h^t)$ is an auxiliary function for $F(h)$ if the
+conditions
+\[
+  G(h,h') \geqslant F(h), \quad G(h,h) = F(h)
+\]
+are satisfied.
+
+\textbf{Lemma 1} if $G$ is an auxiliary function,
+then $F$ is nonincreasing under the update
+\[
+  h^{t+1} = \text{arg} \, \underset{h}{\text{min}} \; G(h,h^t)
+\]
+
+\textbf{Proof}
+$F(h^{t+1}) \leqslant G(h^{t+1},h^t) \leqslant G(h^t,h^t) = F(h^t)$
+$\blacksquare$
+
+\textbf{Lemma 2} if $K(h^t)$ is the diagonal matrix
+\[
+  K_{ab}(h) =
+  \delta_{ab}
+  (\underbrace{W^T W h^t}
+    _{\substack{\text{this is a}\\ \text{vector}}}
+  )_a / h_a^t
+\]
+then
+\[
+  G(h,h^t) = F(h^t) + (h - h^t)^T \nabla F(h^t)
+    + \frac{1}{2} (h - h^t)^T K(h^t) (h - h^t)
+\]
+is an auxiliary function for
+\[
+  F(h_j) = \frac{1}{2} \sum_{i}
+  \left(
+    V_{ij} - \sum_{k}W_{ik}H_{kj}
+  \right)^2
+\]
+
+\textbf{Proof}
+$\blacksquare$
 
 \section{Notes}
 
