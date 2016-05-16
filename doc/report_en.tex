@@ -5,7 +5,116 @@
 
 \begin{document}
 
-\section{NMF}
+\section{Theory}
+
+\subsection{NMF}
+
+\subsubsection{Problem statement}
+
+The formulation of non-negative matrix factorization is as follows:
+
+For a given matrix $V$ need to find non-negative factors $W$ and $H$
+such that
+\[
+  V \approx WH, \quad W,H \geqslant 0
+\]
+
+Now we are going consider iterative method of an approximation.
+But before doing so we need to define some cost function.
+It can be any measure of distance between matrices.
+Let us consider the Euclidean distance:
+\[
+  ||A - B|| = \sqrt{\sum_{ij} (A_{ij} - B_{ij})^2}
+\]
+
+It is obvious that cost function is non-negative
+and equals 0 iff $A = B$.
+
+\textbf{Problem} For a given matrix constant $V$
+and initial variable matrices $W$ and $H$
+need to minimize cost function $||V - WH||$ with constraints
+$W,H \geqslant 0$.
+
+\subsubsection{Gradient descent}
+Let's consider a function $F = \frac{1}{2}||V - WH||^2$.
+
+Its explicit form is:
+\[
+  F = \sum_{ij}
+  \left(
+    V_{ij} - (WH)_{ij}
+  \right)^2
+\]
+
+Let's $h_j$ will stand for $j$th column of matrix $H$
+and $w_i$ will stand for $i$th row of matrix $W$.
+
+Now let's find a gradient of $F$ in respond to $H$ and $W$ separetly.
+
+\[
+  F(h_j) = \frac{1}{2} \sum_{i}
+  \left(
+    V_{ij} - \sum_{k}W_{ik}H_{kj}
+  \right)^2
+\]
+
+\[
+  \frac{\partial F(h_j)}{\partial H_{sj}} =
+  - \sum_i
+    \left(
+      V_{ij} - \sum_k W_{ik}H_{kj}
+    \right)
+  W_{is} =
+  -
+    \left(
+      \sum_i W_{is}V_{ij} - \sum_i\sum_kW_{ik}W_{is}H_{kj}
+    \right)
+\]
+
+\[
+  \nabla F(H) = - ( W^TV - W^TWH )
+\]
+
+\[
+  F(w_i) = \frac{1}{2}\sum_j
+    \left( V_{ij} - \sum_k W_{ik}H_{kj} \right)^2
+\]
+
+\[
+  \frac{\partial F(w_i)}{\partial W_{ia}} =
+  - \sum_j
+    \left(
+      V_{ij} - \sum_k W_{ik}H_{kj}
+    \right)
+  H_{aj} =
+  -
+    \left(
+      \sum_j H_{aj}V_{ij} - \sum_j \sum_k W_{ik}H_{kj}H_{aj}
+    \right)
+\]
+
+\[
+  \nabla F(W) = - ( VH^T - WHH^T )
+\]
+
+Then common gradient descent updates rule will be:
+\begin{align*}
+  H_{\alpha\mu} \leftarrow H_{\alpha\mu} +
+  \eta_{\alpha\mu} \left[
+     (W^TV)_{\alpha\mu} - (W^TWH)_{\alpha\mu}
+  \right] \\
+  W_{i\alpha} \leftarrow W_{i\alpha} +
+  \zeta_{i\alpha} \left[
+    (VH^T)_{i\alpha} - (WHH^T)_{i\alpha}
+  \right]
+\end{align*}
+
+Here $\eta_{\alpha\mu}$ and $\zeta_{i\alpha}$ must be such parameters
+that guarantee the convergens of the iterative process.
+
+\section{Notes}
+
+\subsection{NMF}
 
 \[
   V =
@@ -108,7 +217,7 @@ where $w_i$ is $i$th row of matrix $W$
   \nabla N(W) = -2 ( VH^T - WHH^T )
 \]
 
-\section{Auxiliary function and an update rule}
+\subsection{Auxiliary function and an update rule}
 
 Let's $G(h, h^t)$ is an auxiliary function for $F(h)$ iff
 \[
