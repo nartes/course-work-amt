@@ -19,7 +19,7 @@ such that
   V \approx WH, \quad W,H \geqslant 0
 \]
 
-Now we are going consider iterative method of an approximation.
+Now we are going consider an iterative method of approximation.
 But before doing so we need to define some cost function.
 It can be any measure of distance between matrices.
 Let us consider the Euclidean distance:
@@ -30,7 +30,7 @@ Let us consider the Euclidean distance:
 It is obvious that cost function is non-negative
 and equals 0 iff $A = B$.
 
-\textbf{Problem} For a given matrix constant $V$
+\textbf{Problem} For a given constant matrix $V$
 and initial variable matrices $W$ and $H$
 need to minimize cost function $||V - WH||$ with constraints
 $W,H \geqslant 0$.
@@ -40,16 +40,20 @@ Let's consider a function $F = \frac{1}{2}||V - WH||^2$.
 
 Its explicit form is:
 \[
-  F = \sum_{ij}
+  F = \frac{1}{2} \sum_{ij}
   \left(
     V_{ij} - (WH)_{ij}
   \right)^2
 \]
 
-Let's $h_j$ will stand for $j$th column of matrix $H$
-and $w_i$ will stand for $i$th row of matrix $W$.
+Let's define $h_j$ as $j$th column of matrix $H$
+and $w_i$ as $i$th row of matrix $W$.
 
-Now let's find a gradient of $F$ in respond to $H$ and $W$ separetly.
+Before introduction of multiplicative update rules
+for a gradient descent let's find ordinary ones.
+As it is well known gradient descent goes in direction
+negative to gradient. Thus let's get formula of the gradient
+for $F$ against $h_j$ and $w_i$ separetly.
 
 \[
   F(h_j) = \frac{1}{2} \sum_{i}
@@ -97,7 +101,7 @@ Now let's find a gradient of $F$ in respond to $H$ and $W$ separetly.
   \nabla F(W) = - ( VH^T - WHH^T )
 \]
 
-Then common gradient descent updates rules will be:
+Then common gradient descent update rules will be:
 \begin{align*}
   H_{\alpha\mu} \leftarrow H_{\alpha\mu} +
   \eta_{\alpha\mu} \left[
@@ -111,10 +115,11 @@ Then common gradient descent updates rules will be:
 
 Here $\eta_{\alpha\mu}$ and $\zeta_{i\alpha}$ must be such parameters
 that guarantee the convergens of the iterative process.
+Usually for a gradient descent they are taken small enough.
 
-\subsubsection{Theorem (Multiplicative update rules)}
+\subsubsection{Multiplicative update rules}
 
-\textbf{Theorem} The cost function $F$ in not increasing under
+\textbf{Theorem} \textit{ The cost function $F$ in not increasing under
 the update
 \[
   H_{\alpha\mu} \leftarrow H_{\alpha\mu}
@@ -122,12 +127,28 @@ the update
   W_{i\alpha} \leftarrow W_{i\alpha}
   \frac{(VH^T)_{i\alpha}}{(WHH^T)_{i\alpha}}
 \]
-
 The cost function $F$ is invariant under these update rules if and only if
 $W$ and $H$ are at a staionary point of $F$.
+}
 
-Before a proof auxiliary function definition will be introduced. As well as
-two lemma with their proofs.
+These multiplicative update rules can be achieved from common gradient
+ones by settings $\eta_{\alpha\mu}$ and $\zeta_{i\alpha}$ to
+the following values:
+\[
+  \eta_{\alpha\mu} =
+  \frac {H_{\alpha\mu}}
+        {(W^TWH)_{\alpha\mu}} \quad
+  \zeta_{i\alpha} =
+  \frac {W_{i\alpha}}
+        {(WHH^T)_{i\alpha}}
+\]
+
+But as these values are not guaranteed to be small it is important
+to provide proof of convergens.
+
+At first auxiliary function definition as well as two lemmas
+are introduced. Later it will be used
+for a theorem proof.
 
 \textbf{Definition} $G(h,h^t)$ is an auxiliary function for $F(h)$ if the
 conditions
@@ -155,10 +176,10 @@ $\blacksquare$
   )_a / h_a^t
 \]
 then
-\[
+\begin{equation}\label{E:auxghht}
   G(h,h^t) = F(h^t) + (h - h^t)^T \nabla F(h^t)
     + \frac{1}{2} (h - h^t)^T K(h^t) (h - h^t)
-\]
+\end{equation}
 is an auxiliary function for
 \[
   F(h_j) = \frac{1}{2} \sum_{i}
@@ -168,6 +189,108 @@ is an auxiliary function for
 \]
 
 \textbf{Proof}
+
+The constraint $G(h,h) = F(h)$ are satisfied. Then we need only
+to show that $G(h,h^t) \geqslant F(h)$.
+
+As partial derivitives of $F$ with an order higher than 2 equal
+0 then it's taylor series are:
+\begin{equation}\label{E:f_taylor}
+  F(h) = F(h^t) + (h - h^t)^T \nabla F(h^t)
+    + \frac{1}{2} (h - h^t)^T (W^TW) (h - h^t)
+\end{equation}
+
+After comparing this equation with eq.\eqref{E:auxghht} we find that
+$G(h,h^t) \geqslant F(h)$ is equivalent to
+\[
+  \frac{1}{2} (h - h^t)^T \left[K(h^t) - W^TW\right] (h - h^t) \geqslant 0
+\]
+
+As you might see it means positive semidefiniteness of $K(h^t) - W^TW$.
+To prove that let's introduce matrix $M$
+\begin{equation}
+  M_{ab} = h_a^t (K(h^t) - W^T W)_{ab} h_b^t
+\end{equation}
+which is just a rescaling of the components of $K(h^t) - W^TW$.
+
+\textbf{Naive example 1}
+\[
+  E =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 1 \\
+  \end{bmatrix}, \;
+  h = \begin{bmatrix} -2 \\ 3 \end{bmatrix};
+\]
+
+\begin{align*}
+  M_{11} = h_1 E_{11} h_1 = 4; \\
+  M_{12} = h_1 E_{12} h_2 = 0; \\
+  M_{21} = h_2 E_{21} h_1 = 0; \\
+  M_{22} = h_2 E_{22} h_2 = 9; \\
+\end{align*}
+
+if $ S = \text{diag}\{h_j\}$ and $S^T A S \rightarrow B$
+then $B$ is a rescaled quadratic form $A$.
+
+$\square$
+
+Then $K(h^t) - W^TW$ is positive semidefinite if and only if $M$ is.
+And it is
+\begin{multline}
+  v^t M v =
+  \sum_{a,b}v_a h_a^t (\delta_{ab}(W^TWh^t)_a / h_a^t
+  -(W^TW)_{ab})h_b^t v_b \\
+  =
+  \left[
+    \begin{bmatrix}1 & 1 \\ 2 & 0 \\ \end{bmatrix} \times
+    \begin{bmatrix}1 & 2 \\ 1 & 0 \\ \end{bmatrix} \times
+    \begin{bmatrix} -2 \\ 3 \end{bmatrix}
+    =
+      \begin{bmatrix}2 & 2 \\ 2 & 2 \\ \end{bmatrix} \times
+      \begin{bmatrix} -2 \\ 3 \end{bmatrix} =
+      \begin{bmatrix} 2 \\ 2 \end{bmatrix}
+  \right] \\
+  =
+  \left[
+    \delta((W^TWh^t)_a / h_a^t) =
+    \frac{1}{h_a^t} \sum_k (W^TW)_{ak} h_k^t
+  \right] \\
+  =
+  \sum_a v_a^2 {h_a^t}^2
+    \left(\sum_k(W^TW)_{ak}h_k^t\right) /h_a^t -
+    \sum_{a,b} v_ah_a^t(W^TW)_{ab}h_b^tv_b \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a^2 - v_av_b) \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(
+    \frac{1}{2}v_a^2 + \frac{1}{2}v_b^2 - v_av_b) \\
+  = \frac{1}{2} \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a - v_a)^2 \geqslant 0 \\
+\end{multline}
+
+\textbf{Naive example 2}
+
+\[
+  A \geqslant 0 \quad \text{and} \quad
+  B_{ab} = h_a^tA_{ab}h^t
+  \Rightarrow B \geqslant 0
+\]
+\[
+  v =
+  \begin{bmatrix}
+    1 \\ 1 \\ \vdots \\ 1
+  \end{bmatrix} \Rightarrow
+  v^TBv = \sum_{a,b} h_a^tA_{ab}h_b^t \geqslant 0
+\]
+\[
+  \Rightarrow \forall v \quad
+  \sum_{a,b}\left(h_a^tA_{ab}h_b^t\right) (v_a - v_b)^2 \geqslant 0
+\]
+
+$\square$
+
+$\blacksquare$
+
+\textbf{Proof of Theorem}
+
 $\blacksquare$
 
 \section{Notes}
