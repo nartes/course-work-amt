@@ -1,1 +1,4 @@
+% TODO: replacing M-C-j hotkey by configuration
+% it allows to enable vi mode in readline
+% but don't know how to configure it with rc file
 addpath('src/');
