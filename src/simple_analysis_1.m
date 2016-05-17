@@ -10,8 +10,9 @@ function simple_analysis_1(is_script=true)
   [n, m] = size(V1);
 
   if !is_script
-    set(gcf, 'Visible','off');
+    set(gcf(), 'Visible','off');
   end
+  figure(1);
   i = image(FV1); colormap([1 1 1; 0 0 0]);
   print(gcf(), 'build/spectrum.png');
   if !is_script
@@ -19,8 +20,15 @@ function simple_analysis_1(is_script=true)
   end
 
   r = 2;
-  [W, H] = nmf_pg(V1, 'Winit', rand(n, r), 'Hinit', rand(r, m));
+  [W, H, d, iter] = innernmf(V1, r, 1e-2, 100, 1);
+  printf("Distance = %d, iter = %d\n", d, iter);
 
+  figure(2);
+  illustrate(W, H);
+end
+
+function illustrate(W, H)
+  colormap("default");
   subplot(221);
   plot(W(:,1));
   subplot(223);

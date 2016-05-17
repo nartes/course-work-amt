@@ -1,9 +1,14 @@
-function [W,H,d,iter] = innernmf(V, r = 2, tol = 1e-2)
+function [W,H,d,iter] = innernmf(V, r = 2, tol = 1e-2,
+                                 max_iter = 100, attempts = 5)
   [n, m] = size(V);
 
-  PERGRADIENT = 1000;
+  PERGRADIENT = max_iter;
   count = 0;
-  MAX_ITER = 10000;
+  MAX_ITER = attempts * PERGRADIENT;
+
+  bestW = rand(n, r);
+  bestH = rand(r, m);
+  bestd = Inf;
 
   do
     W = rand(n, r); H = rand(r, m);
@@ -18,7 +23,6 @@ function [W,H,d,iter] = innernmf(V, r = 2, tol = 1e-2)
     N = @(A, B) sum(sumsq(A .- B));
 
     #while (D(V, W * H) > 0.1)
-    printf("N is %d\n", N(V, W * H));
     while (N(V, W * H) > tol)
       tH = updateH(V, H, W);
       H(!isnan(tH)) = tH(!isnan(tH));
@@ -30,8 +34,17 @@ function [W,H,d,iter] = innernmf(V, r = 2, tol = 1e-2)
         break;
       end
     endwhile
-
     d = N(V, W * H);
+
+    if d < bestd
+      bestH = H;
+      bestW = W;
+      bestd = d;
+    end
   until (d < 0.1 || count == MAX_ITER)
+
+  d = bestd;
+  W = bestW;
+  H = bestH;
   iter = count;
 endfunction
