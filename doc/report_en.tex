@@ -131,6 +131,17 @@ The cost function $F$ is invariant under these update rules if and only if
 $W$ and $H$ are at a staionary point of $F$.
 }
 
+\textbf{Naive note}
+
+Multiplicative rules are faster
+then ordinary gradient descent rules.
+But they have disadvantage which is expressed
+in denominator, i.e. $WH$. As process approaches
+$V$ which has 0, they appear in the denominator
+and it results in {\it devision by zero}.
+
+$\square$
+
 These multiplicative update rules can be achieved from common gradient
 ones by settings $\eta_{\alpha\mu}$ and $\zeta_{i\alpha}$ to
 the following values:

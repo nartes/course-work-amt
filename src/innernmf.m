@@ -1,4 +1,4 @@
-function [W,H,d] = innernmf(V, r = 2)
+function [W,H,d,iter] = innernmf(V, r = 2, tol = 1e-2)
   [n, m] = size(V);
 
   PERGRADIENT = 1000;
@@ -19,18 +19,19 @@ function [W,H,d] = innernmf(V, r = 2)
 
     #while (D(V, W * H) > 0.1)
     printf("N is %d\n", N(V, W * H));
-    while (N(V, W * H) > 0.1)
-      H = updateH(V, H, W);
-      W = updateW(V, H, W);
+    while (N(V, W * H) > tol)
+      tH = updateH(V, H, W);
+      H(!isnan(tH)) = tH(!isnan(tH));
+      tW = updateW(V, H, W);
+      W(!isnan(tW)) = tW(!isnan(tW));
 
       ++count;
       if (rem(count, PERGRADIENT) == 0)
         break;
       end
-      printf("N is %d\n", N(V, W * H));
     endwhile
 
     d = N(V, W * H);
   until (d < 0.1 || count == MAX_ITER)
-  printf("Iter is %d\n", count);
+  iter = count;
 endfunction
