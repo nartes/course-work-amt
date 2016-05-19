@@ -1,7 +1,8 @@
-function s=simple_signal_1(is_script=false)
-  signal = @(a, b, g, d, t) gate(a * t) .* sin(g * t) + gate(b * t) .* sin(d * t);
+function s=simple_signal_1(is_script=false, Fs = 44100)
+  signal = @(a, b, g, d, t) gate(a * t) .* sin(g * t)...
+    + gate(b * t) .* sin(d * t);
 
-  sample_rate = 44100;
+  sample_rate = Fs;
   duration = 10; % seconds
 
   t = linspace(0, duration, round(duration * sample_rate));

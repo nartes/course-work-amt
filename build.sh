@@ -1,6 +1,7 @@
 #!/usr/bin/zsh
 
-if [[ ! -e build/spectrum.png ]] then
+if [[ ! -e build/simple_analysis_nmf.png ||
+      ! -e build/simple_analysis_dtfs.png ]] then
 	octave --eval 'simple_analysis_1(false)'
 fi
 

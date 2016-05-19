@@ -1,8 +1,10 @@
 function simple_analysis_1(is_script=true)
   pkg load linear-algebra
   L = 4096;
+  Fs = 44100;
 
-  s = simple_signal_1();
+  s = simple_signal_1(false, Fs);
+
   V = getspectrum(s, L);
   V1 = V(1:100,:);
   FV1 = V1 >= 1.4e+3;
@@ -12,9 +14,9 @@ function simple_analysis_1(is_script=true)
   if !is_script
     set(gcf(), 'Visible','off');
   end
-  figure(1);
+  figure();
   i = image(FV1); colormap([1 1 1; 0 0 0]);
-  print(gcf(), 'build/spectrum.png');
+  print(gcf(), 'build/simple_analysis_dtfs.png');
   if !is_script
     close();
   end
@@ -23,18 +25,19 @@ function simple_analysis_1(is_script=true)
   [W, H, d, iter] = innernmf(V1, r, 1e-2, 100, 1);
   printf("Distance = %d, iter = %d\n", d, iter);
 
-  figure(2);
-  illustrate(W, H);
+  figure();
+  illustrate(W, H, L, Fs);
 end
 
-function illustrate(W, H)
-  colormap("default");
+function illustrate(W, H, L, Fs)
+  t = (1:size(W,1)) * Fs / L;
   subplot(221);
-  plot(W(:,1));
+  plot(t, W(:,1),'k');
   subplot(223);
-  plot(W(:,2));
+  plot(t, W(:,2),'k');
   subplot(222);
-  plot(H(1,:)');
+  plot(H(1,:)','k');
   subplot(224);
-  plot(H(2,:)');
+  plot(H(2,:)','k');
+  print(gcf(), 'build/simple_analysis_nmf.png');
 end
