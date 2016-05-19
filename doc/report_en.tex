@@ -63,9 +63,354 @@
 
 \cleardoublepage
 
-
+\section{Introduction}
 
 \section{Theory}
+
+\subsection{DSP}
+
+DSP stands for digital signal processing. I was relying alot
+onto this domain during my reasearches. Here i am going to
+revise the material that was important to understanding.
+
+Thus let's we have a discrete signal with a period $N$.
+
+It was obtained by sampling a continuous signal
+with a sampling rate 44100 per second.
+Then this large signal is cut off in segments of a length 4096.
+
+The very this segmentis source periodical signal.
+Now it is a subject to \textbf{Discrete-Time Fourier Series} analysis.
+
+Initial signal is $s(t)$, where $t$ is measured in second. Then its
+sampling provides discrete signal $s[n]$ with a smpling rate 44100.
+\[
+  s[n] = s(nT), \quad T = 1 / 44100
+\]
+
+Now let's take a segment of length 4096, i.e. the length
+of time-window, and define it as $x[n]$ ($|x[n]| = N$).
+
+The goal is to break this chunk up to complex exponential signals
+in order to analyse its power distribution among frequencies of that
+harmonically related complex exponentials.
+
+The following formula
+\[
+  c_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n] e^{-j\frac{2\pi}{N}kn}
+\]
+provides coefficients of \textbf{Discrete-Time Fourier Series}.
+
+Thus
+\[
+  x[n] = \sum_{k=0}^{N-1} c_k e^{j\frac{2\pi}{N}kn}.
+\]
+The last two equations are analysis and synthesis of Fourier transform.
+
+Let's pint out a property of Fourier Series coefficients $c_k$.
+It arises due to signal $x[n]$ is real.
+
+In general $c_k$ are complex numbers, but here
+\[
+  c_{-k} = c_k^* = |c_k| e^{-j\angle c_k} \text{, hence}
+\]
+
+\[
+  |c_k| = |c_{-k}|, \quad \angle (c_{-k}) = -\angle c_k
+\]
+
+which means that the magnitude spectrum has even symmetry
+and the phase spectrum has odd symmetry. As a result
+only half of spectrum is usefull.
+
+\subsubsection{Notes on sampling}
+
+In the most common form of sampling known as periodic or uniform sampling,
+a sequence of samples $x[n]$ is obtained from a continuous-time signal
+$x_c(t)$ by taking values at equally spaced points in time.
+Periodic sampling is defined by the relation
+\[
+  x[n] \triangleq x_c(t) \left. \right|_{t=nT} = x_c(nT), \quad
+  - \infty < n < \infty
+\]
+where $T$, the fixed time interval between samples
+is known as the sampling period. The reciprocal of the sampling
+period, $F_s = 1 / T$, is called sampling frequency
+(when expressed in cycles per second or Hz)
+or sampling rate (when expressed in samples per second).
+
+We now ask: are the samples $x[n]$ sufficient to describe uniquelly
+the original continuous-time signal and, if so, how can $x_c(t)$
+be reconstructed from $x[n]$.
+
+Tne answer to this questions lies in the frequency domain, that is,
+in the relation between the spectra of $x_c(t)$ and $x[n]$.
+
+\subsubsection{The effect of undersampling: aliasing}
+
+According to the sampling theorem, a continuous-time signal
+$x_c(t)$ with frequencies no higher than $F_H$ can be reconstructed
+exactly from its samples $x[n]=x_c(nT)$, if the samples are taken
+at a rate $F_s = 1/T$ that is greater than the Nyqueist rate $2F_H$.
+The spectrum of $x[n]$ is obtained by scaling spectrum of $x_c(t)$
+by $F_s$ and putting copies at all integer multiplies of $F_s$.
+
+If these copies do not overlap we can reconstruct perfectly the original
+signal by taking the inverse Fourier transform of the copy
+centered at zero frequency. If the spectral copies overlap, the spectrum
+of $x_c(t)$ is no longer recoverable from the spectrum of $x[n]$.
+In this case, the reconstructed signal $x_r(t)$ is related
+to the original signal $x_c(t)$ through aliasing distortion.
+
+\subsubsection{Sampling theorem}
+
+Sampling thereom: \textit{Let $x_c(t)$ be a continuous-time bandlimited
+signal with Fourier transform}
+\[
+	X_c(j\Omega) = 0 \text{\quad for \quad} |\Omega| > \Omega_H
+\]
+\textit{Then $x_c(t)$ can uniquely determined by its samples
+$x[n]=x_c(nT)$, where $n = 0,\pm1,\pm2, \dots$, if the sampling
+frequency $\Omega_s$ satisfies the condition}
+\[
+  \Omega_s = \frac{2\pi}{T} \geqslant 2 \Omega_H.
+\]
+In terms of the frequency $F = \Omega / 2\pi$ in Hz, the
+conditions of the sampling theorem are:
+\[
+  X_c(j2\pi F) = 0 \text{\quad for \quad} F > F_H \text{ \quad and \quad}
+  F_s = 1 / T \geqslant 2 F_H.
+\]
+
+\subsubsection{Terminology in sampling operation}
+The highest frequency $F_H$, in Hz, present in a bandlimited signal
+$x_c(t)$ is called the Nyquist frequency. The minimum sampling frequency
+required to avoid overlapping bands is $2F_H$, which is called Nyquist rate.
+The actual highest frequency that the sample signal $x[n]$ contains
+is $F_s/2$, in Hz, and is termed as the folding frequency.
+
+\subsubsection{Fourier transform}
+
+$$s[n], n = 1 \dots N \quad |s[n]| = N \quad T = 44100$$
+where T is sampling rate, and $F_s = 1 / T$ - fundemental frequency.
+
+$S[k]$ -- transformed signal $s[n]$.
+
+Let's $W_N^k = e^{j\frac{2\pi}{N}kn}, k = \overline{0,N-1}$.
+
+$e^{i\phi} = cos\phi + i sin\phi$
+
+System of $\left\{ W_N^k\right\}_{k=\overline{0,N-1}}$ is orthogonal and
+element has it's norm equals to $N$.
+
+Let's define $S[k] = c_k; s[n] = \sum_{k=0}^{N-1}c_kW_N^k$
+
+$c_k = \frac{1}{N} \sum_0^{N-1} s[n] W_N^k$
+
+$<W_N^k,W_N^m> = \sum_{n=0}^{N-1}W_N^kW_N^m$
+
+$\sum_n e^{j\frac{2\pi}{N}(k-m)n} =
+\begin{cases}
+	0, k\not = m\\
+  N, k  = m
+\end{cases}$
+
+\[
+  cos(2\pi F_0 n T + \Theta) = cos(2 \pi f_0 n + \Theta)
+\]
+
+Periodicity in time, to be periodic we should have
+$2 \pi f_0 N = 2 \pi k\in \mathbb{Z}$, i.e. $f_0 = \frac{k}{N}$,
+i.e. normalized frequency has a period.
+
+This
+\[
+  s[n] = e^{j\frac{2\pi}{N} k n}
+\]
+is complex exponential periodical discrete signal.
+
+\begin{multline}
+	s[n + N] = e^{ j \frac{2\pi}{N} k (n + N) } =
+  e^{ j \frac{2\pi}{N} k n}
+	e^{ j \frac{2\pi}{N} k N} = \\
+ \left[
+   e^{ j 2\pi k} = cos 2 \pi k + i \sin 2 \pi k = 1
+ \right]
+ = s[n]
+\end{multline}
+
+\[
+  W_N^k =
+  e^{ j \frac{2\pi}{N} k n}
+\]
+
+It is easy to see that $W_N^{k+N} = W_N^k$, and so this sequence
+is periodical by $k$.
+
+It is called a set of harmonically related complex exponential signals
+with fundemental frequency $\frac{2 \pi}{N}$.
+
+\[
+  \sum_{n = 0}^{N-1} W_N^k {W_N^m}^* =
+  \sum_{n = 0}^{N-1} e^{ j \frac{2\pi}{N} (k - m) n}
+\]
+
+The goal of Fourier analysis of signals is to break up all signals into
+summations of sinusoidal components.
+
+If we assume that $t$ is measured in seconds, the units of $F_0$
+($A sin (2 \pi F_0 t + \Theta$) are cycles per second or Hertz (Hz).
+
+Using Euler's identity we can express every sinusoidal signal in terms
+of two complex exponentials with the same frequency:
+\[
+  \Omega_0 = 2 \pi F_0 \quad
+  A cos(\Omega_0 t + \Theta) =
+	\frac{A}{2} e^{j\Theta} e^{j\Omega_0 t} +
+  \frac{A}{2} e^{-j\Theta} e^{-j\Omega_0 t}
+\]
+
+$2 \pi F_0 = \Omega$ reflects how much radians per second.
+
+\begin{center}
+  $sin(t)$ \\
+  $sin(2 \pi t)$
+	frequency narrrowed in $2 \pi$ times \\
+  $sin(F_0 2 \pi t)$
+  frequency narowed $F_0$ times
+\end{center}
+Thus $F_0$ is cycles of sin per second, i.e. Hertz.
+
+System $H$ is linear iff for every real or complex constant $a_1, a_2$
+and every input signal $x_1[n]$ and $x_2[n]$
+\[
+  H(a_1x_1[n] + a_2x_2[n]) =
+  a_1 H(x_1[n]) + a_2 H(x_2[n])
+\]
+for all values $n$.
+
+A system is called time-invariant or fixed iff
+\[
+  y[n] = H(x[n]) \Rightarrow y[n - n_0] = H(x[n - n_0])
+\]
+for every input signal $x$ and time shift $n_0$. That is, a time shift
+in the input results in a corresponding time shift in the output.
+
+The following equation shows with a help of convolution integral response
+of the LTI system to the input $x(t) = e^{j\Omega t}$
+\begin{align*}
+  y(t) = \int_{-\infty}^{\infty} h(\tau)x(t - \tau) d \tau =
+	\int_{-\infty}^{\infty} h(\tau) e^{j\Omega(t - \tau)} d \tau =
+	\left(
+    \int_{-\infty}^{\infty} h(\tau) e^{j\Omega\tau} d \tau
+  \right)
+	e^{j\Omega t}
+\end{align*}
+Note that if the integral exists its value is a complex constant that depends
+on input frequency.
+Thus $y(t) = H(j\Omega)e^{j\Omega t}$.
+
+This implies that the complex exponentials are eigenfunctions
+of continuous-time LTI systems.
+For a specific value of $\Omega$, the constant $H(j\Omega)$ is an eigenvalue
+associated with the eigenfunction $e^{j\Omega}$.
+Choosing $h(t)$ so that $H(j\Omega) \approx 1$ over some range of frequencies
+and $H(j\Omega) \approx 0$ over another range of frequencies,
+provides the basis for the design of frequency-selective filters.
+
+\[
+  \sum_{n=<N>} s_k[n] s_k^*[n] =
+  \sum_{n=<N>} e^{j \frac{2\pi}{N} kn}
+		e^{-j \frac{2\pi}{N} mn} =
+  \sum_{n=<N>} cos \left(\frac{2\pi}{N} kn\right)
+		cos \left(\frac{2\pi}{N} mn\right)
+\]
+
+Let's provide few referencies from a DSP book on a Fourier transform.
+
+Before sampling frequency is measured in Hertz, and after a sampling
+it is measured in cycles per sample.
+
+We synthesize a signal $x(t)$ using a linear combination of the form
+\begin{equation} \label{E:423}
+  x(t) = \sum_{-\infty}^{\infty} c_k e^{jk\Omega_0t}.
+\end{equation}
+
+Suppose now that \eqref{E:423} is a valid representation of a periodic
+signal $x(t)$. What is the relation between coefficients $c_k$ and
+the function $x(t)$? To answer this, we multiply both sides
+of \eqref{E:423} by $e^{-j\Omega_0 m t}$, we change the order of
+integration with summation, we integrate over a full period, and then
+simplify the result using orthogonality. The answer is
+\begin{equation} \label{E:424}
+  c_k = \frac{1}{T} \underset{T_0}\int x(t) e^{-jk\Omega_0t} dt
+\end{equation}
+
+\eqref{E:423} and \eqref{E:424} are Synthesis and Analysis equations.
+
+The plot of $x(t)$ as a function of time $t$ (waveform) provides
+a description of the signal in the time-domain.
+The plot of $c_k$ as a function of frequency $F = k F_0$ (spectrum)
+constitues a description on the signal in the frequency-domain.
+
+Since the coefficients $c_k$ are in general, complex-valued, we
+can express them in polar form
+\[
+  c_k = |c_k| e^{j\angle c_k}
+\]
+
+The plot of $|c_k|$ is known as the magnitude spectrum
+of $x(t)$, while the plot of $\angle c_k$ is known as the phase spectrum
+of $x(t)$. If $c_k$ is real-valued we can use a signle plot, known
+as the amplitude spectrum.
+
+The following observations are usefull when we deal with spectra of
+periodic signals:
+\begin{enumerate}
+\item to emphasize the frequency-domain interpretation we define
+$c(kF_0) = c_k$ and plot $|c(kF_0)|$ and $\angle c(kF_0)$ as functions
+of frequency $F = kF_0$.
+
+\item the spectral lines have uniform spacing $F_0 = 1 / T_0$
+determined by the fundemental period $T_0$ of $x(t)$.
+The shape of $x(t)$ is specified by the values of the Fourier
+coefficients $c_k$.
+
+\item if $x(t)$ is a real function of time, we have
+\[
+  c_{-k} = c_k^* = |c_k| e^{-j\angle c_k} \text{, hence}
+\]
+
+\[
+  |c_k| = |c_{-k}|, \quad \angle (c_{-k}) = -\angle c_k
+\]
+which means that the magnitude spectrum has even symmetry
+and the phase spectrum has odd symmetry.
+
+\[
+  c_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n] e^{-j\frac{2\pi}{N}kn}
+\]
+
+\center{Discrete-Time Fourier Series}
+
+\[
+  x[n] = \sum_{k=0}^{N-1} c_k e^{j\frac{2\pi}{N}kn}.
+	\leftrightarrow
+  c_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n] e^{-j\frac{2\pi}{N}kn}
+\]
+
+\[
+  c_k = \frac{1}{N} \left(\sum_{n=0}^{N-1} x[n] e^{-j\frac{2\pi}{N}kn}\right)
+  \Rightarrow
+  \begin{aligned}
+    c = \frac{1}{N} * \text{fft}(x) \\
+    x = N * \text{ifft}(c)
+  \end{aligned}
+\]
+
+
+
+\end{enumerate}
 
 \subsection{NMF}
 
@@ -643,5 +988,90 @@ because a quite general modeling approach.
 Need further investigaion.
 
 $\square$
+
+\section{Conclusion}
+
+\subsection{DSP}
+
+	I studied a little DSP. I revised Fourier transform despite of the fact
+that paper's sources utilizes built-in fast fourier transform algorithm to
+Octave. More about DSP. I know that signal is physical property that can varies
+and thus produce function of time if it goes about analogous one. And actually
+any function of time might be considered as a signal. Then I read that signal
+can be continuous and discreat. Usually it depends on its nature and a system
+that processes it. Because they can be transformed from one type to another.
+There are two main dimensions, i.e. time and value and both can be continues or
+discreate. When we are taking continues signal at a discreate time moments we
+are performing sampling and thus produce sampled signal or discreat one. The
+periodicity of sampling precisly dots per second is called sampling rate. Now
+lets consider dimensions of a signal value. Depending on a signal nature it can
+be a number or a vector. But anyway we are trying to store this number in a
+computer when we are performing quantization because in general we can save to
+a certain degree of precise, e.g. it can be 128 bit or 2 byte integer number,
+or a double precision real number, anyway it holds finite amount of digits.
+Both sampling and quantization can be traded off on demand. You can trade off
+between precision or less memory amount in the simplest case.
+
+Signals might be finite or infinite. They can be periodical or not. There is a
+lot specific and important signals that are considered in DSP. They are unit
+step function, impulse function. Note function and signal terms are used
+interchangeably. Of course sinusoidal and cosinusoidal signals or better to say
+waveforms amongh important ones.
+
+Of course signal has its length in a fiite case. After that appears fourier
+transform, that allows to unfold a signal into a sum of elementary periodical
+signals, i.e. complex exponents, that are rescaled, or scaled harmonically, it
+is a linear combination of this signals to be precise. Because they usually
+present as parts in the signal and each of them add to total signal.
+
+For example to take into consideration piano and guitar their recording are
+different. Sound profile here refers to a fourier transform of audio signal.
+The transform might also be called spectrogram. It represents the power of
+elementary signals in a mixture. In a fourier transform these are coefficients
+in a sum. Each elementary signal has a frequency which can expressed in a Hz
+units, i.e. repeatetion per seoncd. And most important is that signal reduction
+by this signals represents unfolding a signal to frequiencies it is composed
+of. In a FT elementary signal frequiencies are scaled equally.
+
+So take the same on a piano and a guitar and profile will look like:
+
+
+
+
+
+
+The first figure stands for a guitar note profile and the second for a piano
+one.  They both have equal frequencies of the highest peak, but piano's profile
+contains extra frequencies with descending amplitudes. They are called
+overtones. It is because physical nature of piano, so it makes piano sound
+different, distinguishable from guitar's one. The frequencies are scaled by
+integer multiplier 2,3, … comparing to main or “F0” one.
+
+In a pair with FT stands Sampling Theorem. It stands that for a discreat signal
+of a length L in a perfect reconstruction only frequencies up to L / 2 are to
+revealed.
+
+One to this fact usually it a time window has a length of say 4096 bit only
+half of a spectrogram matters. For example from 1 to LowerBound(4096 / 2) Hz.
+The rest will be mirror reflection.
+
+That was enough to apply fourier transform to a live recording from a laptop
+microphone. Then a resulting spectrogram was analysed manually. An interesting
+fact was that despite of sinking board fan to a microphone it doesn't spoil
+spectrogram and it clearly reveal three notes that were performed by voice. In
+report even demonstrated the frequency of peak crresponding to a note A3 and it
+does really stand closer to A3 rather than to neighbor semitones G3\# and A3\#.
+
+But there were not presented even emperical results of this facts. So it surely
+looks like a luck or intentional fooling of readers with a succefull approach.
+
+It would be nice to provide solid statistics about this method. It can
+automated by generating notes along and then performing on them global maximum
+search. Then robustness may checked out under different circumstances like a
+noise mixture, length rescaling or instrument replacement.
+
+Also current report has lack of solid theory on a fourier transform. It was not
+even covered with tests in source codes.
+
 
 \end{document}
