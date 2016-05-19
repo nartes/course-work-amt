@@ -390,24 +390,186 @@ $WH \approx V$, и это приводит
 
 $\square$
 
+Эти мультипликативные правила перехода могут быть получены из
+обычных правил градиентного спуска, если положить
+$\eta_{\alpha\mu}$ и $\zeta_{i\alpha}$ равным:
+\[
+  \eta_{\alpha\mu} =
+  \frac {H_{\alpha\mu}}
+        {(W^TWH)_{\alpha\mu}} \quad
+  \zeta_{i\alpha} =
+  \frac {W_{i\alpha}}
+        {(WHH^T)_{i\alpha}}
+\]
+
+Но эти значения не гарантируются малыми и важно предоставить
+доказательство сходимости.
+
+Во-первых ввёдем определение вспомогательной функции, а также две леммы.
+А позже воспользуемся этим при доказательстве теоремы.
+
+\textbf{Определение} $G(h,h^t)$ есть вспомогательная функция для $F(h)$
+если условия
+\[
+  G(h,h^t) \geqslant F(h), \quad G(h,h) = F(h)
+\]
+выполняются.
+
+\textbf{Лемма 1} if $G$ вспомогательная функция,
+тогда $F$ не возрастает при переходе
+\[
+  h^{t+1} = \text{arg} \, \underset{h}{\text{min}} \; G(h,h^t)
+\]
+
+\textbf{Доказательство}
+$F(h^{t+1}) \leqslant G(h^{t+1},h^t) \leqslant G(h^t,h^t) = F(h^t)$
+$\blacksquare$
+
+\textbf{Лемма 2} Если $K(h^t)$ диагональная матрица
+\[
+  K_{ab}(h) =
+  \delta_{ab}
+  (\underbrace{W^T W h^t}
+    _{\text{это вектор}}
+  )_a / h_a^t
+\]
+тогда
+\begin{equation}\label{E:auxghht}
+  G(h,h^t) = F(h^t) + (h - h^t)^T \nabla F(h^t)
+    + \frac{1}{2} (h - h^t)^T K(h^t) (h - h^t)
+\end{equation}
+есть вспомогательная функция для
+\[
+  F(h_j) = \frac{1}{2} \sum_{i}
+  \left(
+    V_{ij} - \sum_{k}W_{ik}H_{kj}
+  \right)^2
+\]
+
+\textbf{Доказательство}
+
+Ограничение $G(h,h) = F(h)$ выполняется. Поэтому требуется только
+показать, что $G(h,h^t) \geqslant F(h)$.
+
+Поскольку частные производные $F$ порядка выше 2-ого равны нулю,
+то разложение $F$ в ряд тейлора есть:
+\begin{equation}\label{E:f_taylor}
+  F(h) = F(h^t) + (h - h^t)^T \nabla F(h^t)
+    + \frac{1}{2} (h - h^t)^T (W^TW) (h - h^t)
+\end{equation}
+
+После сравнения этого уравнения с eq.\eqref{E:auxghht} мы находим
+что $G(h,h^t) \geqslant F(h)$ эквивалентно
+\[
+  \frac{1}{2} (h - h^t)^T \left[K(h^t) - W^TW\right] (h - h^t) \geqslant 0
+\]
+
+Не трудно видеть, что это означает положительную полу-определенность
+$K(h^t) - W^TW$.
+Для доказательства введём дополнительную матрицу $M$
+\begin{equation}
+  M_{ab} = h_a^t (K(h^t) - W^T W)_{ab} h_b^t
+\end{equation}
+которая получена преобразованием сжатия/растяжения
+матрицы $K(h^t) - W^TW$.
+
+\textbf{Простой пример}
+\[
+  E =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 1 \\
+  \end{bmatrix}, \;
+  h = \begin{bmatrix} -2 \\ 3 \end{bmatrix};
+\]
+
+\begin{align*}
+  M_{11} = h_1 E_{11} h_1 = 4; \\
+  M_{12} = h_1 E_{12} h_2 = 0; \\
+  M_{21} = h_2 E_{21} h_1 = 0; \\
+  M_{22} = h_2 E_{22} h_2 = 9; \\
+\end{align*}
+
+Если $ S = \text{diag}\{h_j\}$ и $S^T A S \rightarrow B$
+то $B$ есть измененная в масштабе квадратичная форма $A$.
+
+$\square$
+
+В итоге квадратичная форма $K(h^t) - W^TW$
+положительна полу-определена тогда и только
+тогда, когда таковой является $M$. А так и есть, поэтому
+докажем этот факт
+\begin{multline}
+  v^t M v =
+  \sum_{a,b}v_a h_a^t (\delta_{ab}(W^TWh^t)_a / h_a^t
+  -(W^TW)_{ab})h_b^t v_b \\
+  =
+  \left[
+    \begin{bmatrix}1 & 1 \\ 2 & 0 \\ \end{bmatrix} \times
+    \begin{bmatrix}1 & 2 \\ 1 & 0 \\ \end{bmatrix} \times
+    \begin{bmatrix} -2 \\ 3 \end{bmatrix}
+    =
+      \begin{bmatrix}2 & 2 \\ 2 & 2 \\ \end{bmatrix} \times
+      \begin{bmatrix} -2 \\ 3 \end{bmatrix} =
+      \begin{bmatrix} 2 \\ 2 \end{bmatrix}
+  \right] \\
+  =
+  \left[
+    \delta((W^TWh^t)_a / h_a^t) =
+    \frac{1}{h_a^t} \sum_k (W^TW)_{ak} h_k^t
+  \right] \\
+  =
+  \sum_a v_a^2 {h_a^t}^2
+    \left(\sum_k(W^TW)_{ak}h_k^t\right) /h_a^t -
+    \sum_{a,b} v_ah_a^t(W^TW)_{ab}h_b^tv_b \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a^2 - v_av_b) \\
+  = \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(
+    \frac{1}{2}v_a^2 + \frac{1}{2}v_b^2 - v_av_b) \\
+  = \frac{1}{2} \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a - v_a)^2 \geqslant 0 \\
+\end{multline}
+
+\textbf{Простой пример}
+
+\[
+  A \geqslant 0 \quad \text{and} \quad
+  B_{ab} = h_a^tA_{ab}h^t
+  \Rightarrow B \geqslant 0
+\]
+\[
+  v =
+  \begin{bmatrix}
+    1 \\ 1 \\ \vdots \\ 1
+  \end{bmatrix} \Rightarrow
+  v^TBv = \sum_{a,b} h_a^tA_{ab}h_b^t \geqslant 0
+\]
+\[
+  \Rightarrow \forall v \quad
+  \sum_{a,b}\left(h_a^tA_{ab}h_b^t\right) (v_a - v_b)^2 \geqslant 0
+\]
+
+$\square$
+
+$\blacksquare$
 
 \cleardoublepage
 \section{Реализация прототипа алгоритма в Octave}
-  Программа Octave представляет собой OpenSource версию проприетарного приложения
-  Matlab. В данном случае это позволяет визуализировать работу алгоритма с помощью
-  встроенных средств построения графики. Что касается скорости работы, то это не
-  принципиально и в конечном приложении производительность может быть увеличена
-  засчет использования компилируемых языков типа C, C++.
+  Программа Octave представляет собой OpenSource версию проприетарного
+  приложения Matlab. В данном случае это позволяет визуализировать работу
+  алгоритма с помощью встроенных средств построения графики. Что касается
+  скорости работы, то это не принципиально и в конечном приложении
+  производительность может быть увеличена засчет использования компилируемых
+  языков типа C, C++.
 
   В приложении А приведен пример кода программы на Octave.
 
 \cleardoublepage
 \section{Практическое применения для анализа цифровой аудио записи}
 
-  Для пробной проверки были сделана запись простой мелодии ля-до-ми в исполнении мужчины
-  в малой октаве. Отметим, что запись производилась через микрофон ноутбука с
-  достаточно плохим качеством записи. Ещё более усугубляющим фактором является
-  работа бортового куллера на частоте порядка 100Гц.
+  Для пробной проверки были сделана запись простой мелодии ля-до-ми
+  в исполнении мужчины в малой октаве. Отметим, что запись производилась через
+  микрофон ноутбука с достаточно плохим качеством записи. Ещё более
+  усугубляющим фактором является работа бортового куллера на частоте порядка
+  100Гц.
 
   Искомые частоты нот будут соответственно A3 - 220Гц, C3 - 130Гц, E3 - 166Гц.
 
@@ -427,8 +589,8 @@ $\square$
     \end{multicols}
   \end{figure}
 
-  Теперь выделим предполагаемый временной интервал для ноты ля и построим
-  для него усредненную спектрограмму (Рис \ref{pic_p1_3d} $-$ \ref{pic_p1_ms}).
+  Теперь выделим предполагаемый временной интервал для ноты ля и построим для
+  него усредненную спектрограмму (Рис \ref{pic_p1_3d} $-$ \ref{pic_p1_ms}).
 
   \begin{figure}[t]
     \begin{multicols}{2}
@@ -445,17 +607,20 @@ $\square$
     \end{multicols}
   \end{figure}
 
-  Как видим максимальным по амлпитуде является некоторый сигнал с частотой менее
-  100Гц, следующим по убыванию можно выделить сигнал с частотой 210-220Гц.
+  Как видим максимальным по амлпитуде является некоторый сигнал с частотой
+  менее 100Гц, следующим по убыванию можно выделить сигнал с частотой
+  210-220Гц.
 
-  Если быть точным, то в окрестности частоты 210 усредненная спектрограмма содержит
-  следующие значения:
+  Если быть точным, то в окрестности частоты 210 усредненная спектрограмма
+  содержит следующие значения:
 
   \begin{tabular}[t]{|c|c|c|c|c|c|c|c|c|c|}
     \hline
-    $20 log_{10}|c_k|$ & -52 & -53 & -45 & -41 & -43 & -53 & -52 & -58 & -54 \\
+    $20 log_{10}|c_k|$ & -52 & -53 & -45
+      & -41 & -43 & -53 & -52 & -58 & -54 \\
     \hline
-    $k Fs/N$ & 183 & 194 & 205 & 215 & 226 & 237 & 248 & 258 & 269 \\
+    $k Fs/N$ & 183 & 194 & 205
+      & 215 & 226 & 237 & 248 & 258 & 269 \\
     \hline
   \end{tabular}
 
@@ -486,142 +651,13 @@ $\square$
   что частоты соседних нот G3\# $-$ 208Гц, A3\# $-$ 233Гц, то это нота A3.
 
 \cleardoublepage
-\part{Использование NMF для распознавания музыки}
-\section{NMF алгоритм}
-\subsection{NMF}
-
-Рассматривается алгоритм для решение следующей задачи:
-
-Non-negative matrix factorization(NMF) Given a non-negative matrix
-V, find non-negative matrix factors W and H such that:
-\begin{equation}
-    V \approx W H
-\end{equation}
-
-NMF can be applied to the statistical analysis of multivariate data
-in the following manner.
-Given a set of multivariate n-dimnesional data vectors, the vectors
-are placed in the columns of an n x m matrix V
-where m is the number of examples in the data set.
-This matrix is then approximately factorized into an n x r matrix
-W and an r x m matrix H.
-Usually $r$ is chosen to be smaller than $n$ or $m$,
-so that $W$ and $H$ are smaller than the original matrix $V$.
-This results in a compressed version of the original data matrix.
-
-Most significant idea in Eq.(1) is the following. It can be rewritten
-column by column as $v \approx W h$, where $v$ and $h$ are the
-corresponding columns of $V$ and $H$.
-In other words, each data vector $v$ is approximated by a linear
-combination of the columns of $W$, weighted by the components of $H$.
-Therefore $W$ can be regarded as containing a basis
-that is optimized for the linear approximation of the data in V.
-Since relatively few basis vectors are used to represent
-many data vectors, good approximation
-can only be achieved if the basis vectors discover structure that is
-latent in the data.
-
-\subsection{Cost functions}
-
-To find an approximate factorization $V \approx WH$, we first need
-to define cost functions that quantify the quality of the
-approximation. Such a cost function can be constructed using some
-measure of distance between two non-negative matrices $A$ and $B$.
-One useful measure is simply the square of the Euclidean distance
-between $A$ and $B$,
-\begin{equation}
-  ||A - B||^2 = \sum_{ij}(A_{ij}-B_{ij})^2
-\end{equation}
-
-Рассматривается следующая формулировка NMF как задачи оптимизации:
-
-Problem 1 Minimize $||V - W H ||^2$ with respect to $W$ and $H$,
-subject to the constraints $W, H \geqslant 0$
-
-Хотя функция $||V - WH||^2$ выпукла по отношению к $W$ только или
-$H$ только, она не выкла по отношению к обоим переменным вместе.
-Therefore it is unrealistic to expect an algorithm
-to solve Problem $1$ in the sence of finding the sense of finding
-global minima. However, there are many techniques from numerical
-optimzation that can be applied to find local minima.
-
-\subsection{Multiplicative update rules}
-
-Theorem 1 The Euclidean distance $||V - WH||$ is nonincreasing under
-the update rules
-\begin{equation}
-  H_{\alpha\mu} \leftarrow H_{\alpha\mu}
-  \frac{(W^TV)_{\alpha\mu}}{(W^TWH)_{\alpha\mu}} \quad
-  W_{i\alpha} \leftarrow W_{i\alpha}
-  \frac{(VH^T)_{i\alpha}}{(WHH^T)_{i\alpha}}
-\end{equation}
-
-\subsection{Multplicative versus additive update rules}
-It is useful to contrast these multiplicative updates with those
-arising from gradient descent. In particular, a simple additive
-update for $H$ that reduces the squared distance can be written
-as
-\begin{equation}
-  H_{\alpha\mu} \leftarrow H_{\alpha\mu} + \gamma [
-    (W^TV)_{\alpha\mu} - (W^TWH)_{\alpha\mu}
-  ]
-\end{equation}
-
-If $\gamma$ are all set equal to some small positive number, this is
-equivalent to conventional gradient descent. As long as this number
-is sufficiently small. the update should reduce $||V-WH||$.
-
-Now if we diagonally rescale the variables and set
-\begin{equation}
-  \gamma = \frac{H_{\alpha\mu}}{(W^TWH)_{\alpha\mu}}
-\end{equation}
-then we obtain the update rule for H that is given in Theorem 1.
-Note that this rescaling results in a multiplicative factor with
-the positive component of the gradient in the denominator
-and the absolute value of the negative component in the numberator
-of the factor.
-
-\subsection{Proofs of convergence}
-To prove Theorem 1, we will make use of an auxiliary function
-similar to that used in the Expectation-Maximation algorithm.
-
-Definition 1 $G(h, h')$ is an auxiliary function for $F(h)$ if the
-conditions
-\begin{equation}
-  G(h,h') \geqslant F(h), \quad G(h,h) = F(H)
-\end{equation}
-are satisfied.
-
-The auxiliary function is a usefull concept because of the following
-lemma, which is also graphically illustrated in Fig. 4.
-
-Lemma 1 if $G$ is an auxiliary functions, then $F$ is nonincreasing
-under the update
-\begin{equation}
-  h^{t+1} = \text{arg min} G(h, h^t)
-\end{equation}
-
-Proof: $F(h^{t+1}) \geqslant G(h^{t+1},h^t) \geqslant G(h^t, h^t)
-= F(h^t)$.
-
-Note that $F(h^{t+1}) = F(h^t)$ only if $h^t$ is a local minimum of
-$G(h,h^t)$. If the derivatives of $F$ exist and are continuous in
-a small neighborhoood of $h^t$, this also implies that
-the derivatives of $F$ equal 0. Thus, by iterating the update in
-Eq. (7) we obtain a sequence of estimates that converge to a local
-minimum $h_{min} = \text{arg min} F(h)$ of the objective function:
-\begin{equation}
-  F(h_{min}) \leqslant \cdots F(h^{t+1}) \leqslant F(h_2)
-  \leqslant F(h_1) \leqslant (F(h_0)
-\end{equation}.
-
-\cleardoublepage
 
 {\large \bf Заключение \\}
 \addcontentsline{toc}{section}{Заключение}
-  Был рассмотрен прототип алгоритма определения фундаментальной частоты фрагмента
-  цифрового сигнала с помощью преобразования Фурье, который может быть
-  использован для построения приложения распознавания последовательности нот.
+  Был рассмотрен прототип алгоритма определения фундаментальной частоты
+  фрагмента цифрового сигнала с помощью преобразования Фурье, который может
+  быть использован для построения приложения распознавания последовательности
+  нот.
 
 \cleardoublepage
 \addcontentsline{toc}{section}{\bibname}
@@ -635,7 +671,8 @@ minimum $h_{min} = \text{arg min} F(h)$ of the objective function:
   %  The Deterministic Case [2 ed.] 2014
 
   \bibitem{GDPE} Gerhard D., Pitch Extraction and Fundemental Frequency:
-    History and Current Techniques, Technical Report TR-CS 2003-06, November, 2003
+    History and Current Techniques, Technical Report TR-CS 2003-06, November,
+    2003
 
   \bibitem{GDCMA} Gerhard D., Computer Music Analysis, Techincal Report CMPT
     TR 97-13, October 13, 1997
