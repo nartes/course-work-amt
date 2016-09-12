@@ -5,6 +5,6 @@ if [[ ! -e build/simple_analysis_nmf.png ||
 	octave --eval 'simple_analysis_1(false)'
 fi
 
-#pdflatex -output-directory=build/ doc/report_en.tex
-pdflatex -output-directory=build/ doc/report.tex
-pdflatex -output-directory=build/ doc/presentation.tex
+pdflatex -output-directory=build/ doc/report_en.tex
+#pdflatex -output-directory=build/ doc/report.tex
+#pdflatex -output-directory=build/ doc/presentation.tex

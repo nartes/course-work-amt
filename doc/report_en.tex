@@ -912,6 +912,121 @@ So $K(h^t) - W^TW \geqslant 0 \iff M \geqslant 0$.
   = \frac{1}{2} \sum_{a,b}h_a^t(W^TW)_{ab}h_b^t(v_a - v_a)^2 \geqslant 0 \\
 \end{multline*}
 
+\subsection{Update rules according to Euclidian distance}
+
+\[
+  G(h) = F(h^t) + (h-h^t)^T \nabla F(h^t) +
+    \frac{1}{2} (h-h^t)^T K(h^t) (h-h^t);
+\]
+
+\[
+  \frac{\partial G(h)}{\partial h_a} =
+    \nabla F(h^t)_a + K(h^t)_{aa} (h-h^t);
+\]
+
+\begin{align*}
+  &\forall a, \; \frac{\partial G(h)}{\partial h_a} = 0
+    \iff
+    \forall a, \; h_a = h_a^t - \nabla F(h^t)_a / K(h^t)_{aa}; \\
+    & \iff
+    [ K(h^t) = \mathit{diag}\{K(h^t)_{aa}\} ]
+    \iff
+    h = h^t - K(h^t)^{-1} \nabla F(h^t);
+\end{align*}
+
+\[
+  K(h^t)_{aa} = \delta_{ab} (W^T W h^t)_a / h^t_a;
+  \nabla F(h^t)) = W^T v - W^T W h^t;
+\]
+
+\begin{equation}\label{E:update_rule_H}
+  \forall a, \; h_a = h_a^t - \frac{h^t_a}{(W^T W h^t)_a}
+    \left( W^T v - W^T W h^t)_a \right),
+\end{equation}
+as $d^2 F(h^t) = v^T K(h^t) v \geqslant 0$ (positive semi-definete),
+then \eqref{E:update_rule_H} defines a point of
+global non-strict minimum;
+
+\subsection{Update rule for $W$}
+
+\[
+  F(W) = \frac{1}{2} \sum_{i,j} \left(
+    V_{ij} - (W H)_{ij}
+  \right)^2;
+\]
+
+Let's $w$ denotes a row of $W$;
+
+\[
+  \frac{\partial F(w_i)}{\partial w_{ia}} =
+    -\left(
+      \sum_j V_{ij} H_{aj}
+      - \sum_j \sum_k W_{ik} H_{kj} H_{aj}
+    \right);
+\]
+
+\[
+  \frac{\partial^2 F(w_i)}{\partial w_{ia} \partial w_{ib}}
+  = (H H^T)_{ab};
+\]
+
+\[
+  G(w, w^t) = F(w^t) + (w - w^t) \nabla F(w^t)
+    + \frac{1}{2} (w - w^t) L(w^t) (w - w^t)^T;
+\]
+
+\[
+  G(w, w^t) \geqslant F(w), G(w, w) = F(w),
+\]
+\begin{center} \bf !to be proven! \end{center}
+
+\[
+  L(w^t)_{aa} = \delta_{ab} (w^t H H^T)_a / w_a^t; \;
+  L(w^t) \text{ is a diagonal matrix.}
+\]
+
+$\rhd$
+
+\begin{align*}
+  & G(w, w^t) - F(w) =
+    \frac{1}{2} (w - w^t) (L(w^t) - H H^T) (w - w^t)^T \geqslant 0
+  \iff \\
+  & (L(w^t) - H H^T) \text{ is a positive semi-definete quadratic form.}
+\end{align*}
+
+Let's define $M_{ab} = w_a [ L(w^t) - H H^T] w_b$,
+thus the matrix $M$ is a rescaling of the former matrix.
+And the one is positive semi-definete if $M$ is. See prove:
+
+\begin{align*}
+  & v^T M v = \sum_{a,b} \left(
+    v^2_a w_a w_b (H H^T)_{ab}
+      - v_a v_b w_a w_b (H H^T)_{ab}
+  \right) = \\
+  & = \frac{1}{2} \sum_{a,b} w_a (H H^T)_{ab} w_b
+    \underset{\geqslant 0}{(v_a - v_b)^2}
+  \geqslant 0
+\end{align*}
+
+\[
+  \sum_{a,b} w_a (H H^T)_{ab} w_b = w_a H H^T w_b^T \geqslant 0,
+  \text{ as } H H^T \geqslant 0
+    \text{ (positive semi-definete) }
+  \lhd
+\]
+
+\[
+  w^{t+1}_a = \left(
+    \underset{w}{argmin} G(w, w^t)
+  \right)_a
+  = w^t_a -
+    \frac
+      {w_a^t}
+      {(w^t H H^T)_a}
+  (v H^T - w^t H H^T)_a
+  = w_a^t \frac{(v H^T)_a}{(w^t H H^T)_a}
+\]
+
 \section{Simple signal}
 
 \[
