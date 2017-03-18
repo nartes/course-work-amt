@@ -38,55 +38,65 @@
 \begin{frame}
    В результате было сделано:
   \begin{enumerate}
-    \item Переведено доказтельство сходимости алгоритма NMF 
-    \item Разобрано его доказательство с точностью до приведенного
-      текста в работе
-    \item Реализовано на практике в Octave его применение
-      для простейшего полифонического сигнала из двух нот A4 и E4
-    \item Сравнена работа этого алгоритма со встроенным в Octave
-      из пакета linear-algebra на случайной матрице и на спектрограмме
-      синтезированной аудиозаписи
-    \item Реализовано на практике применение преобразования Фурье
-      для спектрального анализа аудио записи и определения фундаментальной
-      частоты
+    \item Применен NMF к фразе органа
+    \item Предложена идея улучшения распознавания
   \end{enumerate}
 \end{frame}
 
 \section{Пример}
 \begin{frame}
 \begin{figure}
-    \includegraphics*[width=0.7\linewidth]
-      {build/simple_analysis_dtfs.png}
-    \caption{Матрица $V$ полученная функцией getspectrum}
+    \includegraphics[scale=.25]{res/organ-score.png}
 \end{figure}
 \end{frame}
+
 \begin{frame}
 \begin{figure}
-    \includegraphics*[width=0.7\linewidth]
-      {build/simple_analysis_nmf.png}
-    \caption{Результат применения NMF алогритма}
-      \label{F:SANMF}
+    \includegraphics[scale=.5]{build/plot_grayscale_spectrogram.png}
 \end{figure}
 \end{frame}
+
 \begin{frame}
-NMF обозначает nonnegative matrix factorization.
-С помощью преобразования Фурье получаются столбцы матрицы $V$.
-Они представляют собой магнитудную спектрограмму.
-Таким образом матрица $V$ отображаем изменение спектра с течением
-времени. Затем решается задача
-\[
-  V \approx WH, \quad W,H \geqslant 0, \quad ||V-WH||  \;
-  \text{-- функция потерь}
-\]
-То есть оптимизируется функция потерь -- Евклидова норма разности
-$V$ и $WH$, таким образом строиться приближенное разложение $V$
-в виде произведения матриц $W$ и $H$.
+\begin{figure}
+    \includegraphics[scale=.5]{build/plot_w_matrix.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+    \includegraphics[scale=.5]{build/plot_h_matrix.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+    \includegraphics[scale=.5]{build/test_peaks_detector.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+Для улучшения результата работы алгоритма, необходимо
+\begin{enumerate}
+  \item Определить локальные пики на спектрограмме
+  \item Аппроксимировать их значения используя параболлическую интерполяцию
+  \item Выделить устойчивые пикы как функции частоты по времени,
+    частота должна отклоняться в пределах некоторого порога
+  \item Полученный вид спектрограммы отдать на вход алгоритма
+\end{enumerate}
+\end{figure}
 \end{frame}
 
 \section{Заключение}
 
 \begin{frame}
   \center{Спасибо за внимание!}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+    \includegraphics[scale=.25]{tmp/physicist-nuclearist.jpg}
+\end{figure}
 \end{frame}
 
 \end{document}

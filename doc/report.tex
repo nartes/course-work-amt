@@ -9,6 +9,7 @@
 \usepackage{verbatim}
 \usepackage{ntheorem}
 \usepackage{graphicx}
+\usepackage{subfigure}
 \usepackage{multicol}
 \usepackage{algorithmic}
 \usepackage{moreverb}
@@ -45,12 +46,13 @@
 \centerline{\bf СИНЯК СЕРГЕЙ АЛЕКСАНДРОВИЧ}
 \bigskip
 \bigskip
-\centerline{\large \bf РАСПОЗНАВАНИЕ ЗВУКА}
+\center{\large \bf Применение алгоритма NMF \\
+            к реальному аудиофайлу}
 \vfill
 \begin{centering}
   {
   Курсовая работа \\
-  студента 3 курса, 3 группы, специальность <<информатика>> \\}
+  студента 4 курса, 3 группы, специальность <<информатика>> \\}
 \end{centering}
 \vfill
 \vfill
@@ -727,6 +729,107 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 
 \cleardoublepage
 
+\subsection{NMF: Анализ фразы органа}
+
+\begin{figure}
+  \centering
+  \subfigure[Партитура]{
+    \includegraphics[scale=.5]{res/organ-score.png}}
+  \centering
+  \caption{Анализ фразы органа Ч0}
+    \label{F:5-3-p0}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfigure[Спектрограмма]{
+    \includegraphics[scale=.5]{build/plot_grayscale_spectrogram.png}}\qquad
+  \subfigure[Аппроксимация пиков]{
+    \includegraphics[scale=.5]{build/test_peaks_detector.png}}\\
+  \centering
+  \caption{Анализ фразы органа Ч1}
+    \label{F:5-3-p1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfigure[Матрицы W, частотные профили]{
+    \includegraphics[scale=.5]{build/plot_w_matrix.png}}\qquad
+  \subfigure[Матрица H, временные параметры]{
+    \includegraphics[scale=.5]{build/plot_h_matrix.png}}
+  \centering
+  \caption{Анализ фразы органа Ч2}
+    \label{F:5-3-p2}
+\end{figure}
+
+В данном примере задача заключается в применении алгоритма NMF
+к реальному аудио файлу. Для этой цели был выбрана фраза органа длительностью
+13 секунд \cite{L:organ.wav}. На рисунке \ref{F:5-3-p0} представлена
+партитура для первых 6 секунд.
+
+На изображении \ref{F:5-3-p1} представлена спектрограмма.
+Параметры анализа были выбраны следующими
+\begin{verbatim}
+  FS = info.SampleRate;
+  MFH = 6000;
+  M = 2048;
+  HS = floor(M * 0.25);
+  N = 4096;
+  MFS = floor(MFH / FS * N);
+
+  TL = 0.0;
+  TR = 5.5;
+  SL = floor(TL * FS) + 1;
+  SR = floor(TR * FS) + 1;
+
+  x = mean(audioread(info.Filename), 2)(SL : SR);
+  [y, c] = stft(x, M, HS, N / 2);
+  L = size(y, 2);
+
+  sy = y(1 : MFS, :);
+
+  test_peaks_detector(sy, N, FS);
+
+  plot_grayscale_spectrogram(sy);
+\end{verbatim}
+
+Предварительный анализ аудио файла в Sonic Visualizer \cite{L:sonic-visualizer}
+показал, что достаточно провести анализ в диапозоне ниже 6000 Гц.
+
+В приложении Д приведен исходный код приложения на языке Octave.
+
+На графиках \ref{F:5-3-p2} представлены результаты факторизации спектрограммы.
+Для разложения использовались следующие параметры
+\begin{verbatim}
+  R = 4;
+
+  [W, H] = innernmf(abs(sy), R, 1e-2);
+
+  plot_h_matrix(L, M, HS, FS, TL, R, H);
+  plot_w_matrix(FS, N, MFS, R, W);
+\end{verbatim}
+
+Для улучшения результата работы алгоритма, необходимо
+\begin{enumerate}
+  \item Определить локальные пики на спектрограмме
+  \item Аппроксимировать их значения используя параболлическую интерполяцию
+  \item Выделить устойчивые пикы как функции частоты по времени,
+    частота должна отклоняться в пределах некоторого порога
+  \item Полученный вид спектрограммы, отдать на вход алгоритма
+\end{enumerate}
+
+На рисунке \ref{F:5-3-p2} можно видеть пример аппроксимации пиков
+для исходной спектрограммы, выбранный фрейм является проивзольным.
+
+Как видим большое число пиков имеют небольшое значение амплитуды, следовательно
+можно применить отсечение по пороговому значению амплитуды. Это позволит
+уменшить число ложных пиков, которые не формируют мелодию органа.
+
+Для улучшения распознавания длительности и времени игры нот
+нужно комбинировать результат NMF с другими алгоритмами этого рода.
+
+\cleardoublepage
+
 {\large \bf Заключение \\}
 \addcontentsline{toc}{section}{Заключение}
   В заключении отметим результаты проделанного труда:
@@ -795,7 +898,13 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 
   \bibitem{OD} The fourth edition of the Octave documentation
 
+  \bibitem{ASP} https://www.coursera.org/learn/audio-signal-processing
+
   \bibitem{L:github_nartes} https://github.com/nartes/course-work-amt
+
+  \bibitem{L:organ.wav} https://www.freesound.org/people/nartes/sounds/368365/ 
+
+  \bibitem{L:sonic-visualizer} http://www.sonicvisualiser.org/
 
 \end{thebibliography}
 
@@ -807,10 +916,13 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 \listinginput[1]{1}{src/test2.m}
 
 \section*{Приложение Б}\label{A:nmf.m}
-\listinginput[2]{1}{src/nmf.m}
+\listinginput[1]{1}{src/nmf.m}
 
 \section*{Приложение В}\label{A:getspectrum.m}
-\listinginput[2]{1}{src/getspectrum.m}
+\listinginput[1]{1}{src/getspectrum.m}
+
+\section*{Приложение Д}\label{A:realaudio_nmf_post.m}
+\listinginput[1]{1}{src/realaudio_nmf_post.m}
 
 \end{document}
 % vi: tabstop=2 sw=2 sts=2

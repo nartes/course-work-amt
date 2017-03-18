@@ -1,20 +1,15 @@
-function realaudio_nmf_post
+function realaudio_nmf_post( ...
+	fname = 'res/organ.wav', M = 2048, N = 4096, MFH = 6000, TR = 5.5, R = 4)
   pkg('load', 'linear-algebra');
 
-  fname = 'res/organ.wav';
-
-  info = audioinfo('res/organ.wav');
+  info = audioinfo(fname);
 
   FS = info.SampleRate;
-  MFH = 6000;
-  M = 1024;
   HS = floor(M * 0.25);
-  N = 4096;
   MFS = floor(MFH / FS * N);
 
 
   TL = 0.0;
-  TR = 5.5;
   SL = floor(TL * FS) + 1;
   SR = floor(TR * FS) + 1;
 
@@ -24,12 +19,9 @@ function realaudio_nmf_post
 
   sy = y(1 : MFS, :);
 
-  test_peaks_detector(sy);
-
+  test_peaks_detector(sy(:, round(L / 2)), N, FS);
 
   plot_grayscale_spectrogram(sy);
-
-  R = 4;
 
   [W, H] = innernmf(abs(sy), R, 1e-2);
 
@@ -37,13 +29,15 @@ function realaudio_nmf_post
   plot_w_matrix(FS, N, MFS, R, W);
 endfunction
 
-function test_peaks_detector(sy)
-  sl = abs(sy(:, 100))';
-
-  plot(sl);
+function test_peaks_detector(sy, N, FS)
+  sl = abs(sy)';
 
   peaks = peaks_detector(sl);
-  plot(1 : length(sl), sl, 'r', peaks(:, 1), peaks(:, 2), 'g');
+  plot((1 : length(sl)) / N * FS, sl, 'r-',
+       peaks(:, 1) / N * FS, peaks(:, 2), 'g*');
+  xlabel('Hz'); ylabel('amplitude');
+
+  print('build/test_peaks_detector.png');
 endfunction
 
 function [peaks] = peaks_detector(x)
@@ -76,6 +70,8 @@ endfunction
 function plot_grayscale_spectrogram(sy)
   figure();
   imshow(flipud(abs(sy)));
+
+  print('build/plot_grayscale_spectrogram.png');
 endfunction
 
 function plot_3d_mesh(L, MFS, sy)
@@ -92,6 +88,7 @@ function plot_w_matrix(FS, N, MFS, R, W)
     plot(fhz, W(:, k)');
     xlabel('Hz'); ylabel('amplitude');
   endfor
+  print('build/plot_w_matrix.png');
 endfunction
 
 function plot_h_matrix(L, M, HS, FS, TL, R, H)
@@ -102,4 +99,6 @@ function plot_h_matrix(L, M, HS, FS, TL, R, H)
     plot(tsec, H(k, :));
     xlabel('sec'); ylabel('amplitude');
   endfor
+
+  print('build/plot_h_matrix.png');
 endfunction
