@@ -14,6 +14,8 @@
 \usepackage{algorithmic}
 \usepackage{moreverb}
 \usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{chains, matrix, arrows}
 
 % listings configuration
 \lstdefinestyle{mystyle}{
@@ -839,6 +841,10 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 
 \cleardoublepage
 
+\include{doc/music-recognizer}
+
+\cleardoublepage
+
 {\large \bf Заключение \\}
 \addcontentsline{toc}{section}{Заключение}
   В заключении отметим результаты проделанного труда:
@@ -918,6 +924,12 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
   \bibitem{L:sms-tools} https://github.com/MTG/sms-tools
 
   \bibitem{L:music-recognizer} https://github.com/nartes/music-recognizer
+
+  \bibitem{L:two-way-mismatch} Robert C. Maher, James W. Beauchamp.
+    Fundamental frequency estimation of musical signals
+    using a two-way mismatch procedure, November 1993.
+
+    http://asa.scitation.org/doi/10.1121/1.408685
 
 \end{thebibliography}
 

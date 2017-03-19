@@ -2,6 +2,10 @@ all:
 
 LATEX := pdflatex -output-directory=build/
 
+init:
+	mkdir build -p
+	mkdir build/doc -p
+
 assets-5-2: src/simple_analysis_1.m
 	octave --eval 'simple_analysis_1(false);'
 
