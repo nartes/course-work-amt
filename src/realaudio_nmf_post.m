@@ -1,5 +1,6 @@
 function realaudio_nmf_post( ...
-	fname = 'res/organ.wav', M = 2048, N = 4096, MFH = 6000, TR = 5.5, R = 4)
+	fname = 'res/organ.wav', M = 2048, ...
+	N = 4096, MFH = 6000, TR = 5.5, R = 4)
   pkg('load', 'linear-algebra');
 
   info = audioinfo(fname);
