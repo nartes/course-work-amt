@@ -1,4 +1,4 @@
-\documentclass[oneside, final, 14pt]{extarticle}
+\documentclass[oneside, final, 12pt]{extarticle}
 % rewrite with extreport
 \usepackage[utf8]{inputenc}
 \usepackage[russianb]{babel}
@@ -46,24 +46,33 @@
 \centerline{\bf СИНЯК СЕРГЕЙ АЛЕКСАНДРОВИЧ}
 \bigskip
 \bigskip
-\center{\large \bf Применение алгоритма NMF \\
-            к реальному аудиофайлу}
+\center{\large \bf Автоматическая транскрипция музыки }
 \vfill
 \begin{centering}
-  {
-  Курсовая работа \\
-  студента 4 курса, 3 группы, специальность <<информатика>> \\}
+  {Отчёт по преддипломной практике \\
+  студента 4 курса 3 группы}
 \end{centering}
 \vfill
 \vfill
+\begin{minipage}{0.45\textwidth}
+  \raggedright
+  {<<Допустить к защите>>\\
+  с предварительный оценкой \underline{\hspace{3cm}}\\
+  {\bf Руководитель практики}\\
+  \bigskip
+  <<\quad>> \hspace{3cm} 2017
+  }
+\end{minipage}
 \hfill
-\begin{minipage}{0.35\textwidth}
-  {\bf Научный руководитель \\
+\noindent
+\begin{minipage}{0.45\textwidth}
+  \raggedright
+  {\bf Руководитель практики \\
   {\small{\it Буславский Александр \\ Андреевич}}}
 \end{minipage}
 \vfill
 \vfill
-\centerline{\large \bf Минск, 2016}
+\centerline{\large \bf Минск, 2017}
 
 \restoregeometry
 
@@ -865,19 +874,19 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 \addcontentsline{toc}{section}{\bibname}
 \begin{thebibliography}{0}
 
-  \bibitem{big_dsp_theory} Manolakis D. Applied digital signal
-    processing: theory and practice, 2011
+  %\bibitem{big_dsp_theory} Manolakis D. Applied digital signal
+  %  processing: theory and practice, 2011
 
-  \bibitem{GDPE} Gerhard D., Pitch Extraction and Fundemental Frequency:
-    History and Current Techniques, Technical Report TR-CS 2003-06, November,
-    2003
+  %\bibitem{GDPE} Gerhard D., Pitch Extraction and Fundemental Frequency:
+  %  History and Current Techniques, Technical Report TR-CS 2003-06, November,
+  %  2003
 
-  \bibitem{GDCMA} Gerhard D., Computer Music Analysis, Techincal Report CMPT
-    TR 97-13, October 13, 1997
+  %\bibitem{GDCMA} Gerhard D., Computer Music Analysis, Techincal Report CMPT
+  %  TR 97-13, October 13, 1997
 
-  \bibitem{WMT} https://en.wikipedia.org/wiki/Transcription\_(music)
+  %\bibitem{WMT} https://en.wikipedia.org/wiki/Transcription\_(music)
 
-  \bibitem{WMP} https://en.wikipedia.org/wiki/Pitch\_(music)
+  %\bibitem{WMP} https://en.wikipedia.org/wiki/Pitch\_(music)
 
   \bibitem{DDL} Daniel D. Lee, H. Sebastian Seung,
   Algorithms for Non-negative Matrix Factorization, 2000
@@ -886,19 +895,19 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
     Non-Negative Matrix Factorization
     for Polyphonic Music Trascription, October 19-22, 2003
 
-  \bibitem{QUUX} http://www.quuxlabs.com/blog/2010/09/matrix-factorization-a-simple-tutorial-and-implementation-in-python/
+  %\bibitem{QUUX} http://www.quuxlabs.com/blog/2010/09/matrix-factorization-a-simple-tutorial-and-implementation-in-python/
 
-  \bibitem{GGMMIL} George Grätzer, More Math Into LATEX, Fifth edition
+  %\bibitem{GGMMIL} George Grätzer, More Math Into LATEX, Fifth edition
 
-  \bibitem{AKSPMAMT} Anssi Klapuri, Signal Processing Methods for the Automatic
-    Transcription of Music
+  %\bibitem{AKSPMAMT} Anssi Klapuri, Signal Processing Methods for the Automatic
+  %  Transcription of Music
 
-  \bibitem{PCTAM} Nicholas J. Higham,
-     The Princeton Companion to Applied Mathematics
+  %\bibitem{PCTAM} Nicholas J. Higham,
+  %   The Princeton Companion to Applied Mathematics
 
-  \bibitem{OD} The fourth edition of the Octave documentation
+  %\bibitem{OD} The fourth edition of the Octave documentation
 
-  \bibitem{ASP} https://www.coursera.org/learn/audio-signal-processing
+  %\bibitem{ASP} https://www.coursera.org/learn/audio-signal-processing
 
   \bibitem{L:github_nartes} https://github.com/nartes/course-work-amt
 
@@ -906,23 +915,27 @@ E4 можно рассчитать как $440 \cdot 2^{-\frac{5}{12}}$ Гц.
 
   \bibitem{L:sonic-visualizer} http://www.sonicvisualiser.org/
 
+  \bibitem{L:sms-tools} https://github.com/MTG/sms-tools
+
+  \bibitem{L:music-recognizer} https://github.com/nartes/music-recognizer
+
 \end{thebibliography}
 
-\cleardoublepage
+%\cleardoublepage
 
-\appendix
+%\appendix
 
-\section*{Приложение A}\label{A:test2.m}
-\listinginput[1]{1}{src/test2.m}
+%\section*{Приложение A}\label{A:test2.m}
+%\listinginput[1]{1}{src/test2.m}
 
-\section*{Приложение Б}\label{A:nmf.m}
-\listinginput[1]{1}{src/nmf.m}
+%\section*{Приложение Б}\label{A:nmf.m}
+%\listinginput[1]{1}{src/nmf.m}
 
-\section*{Приложение В}\label{A:getspectrum.m}
-\listinginput[1]{1}{src/getspectrum.m}
+%\section*{Приложение В}\label{A:getspectrum.m}
+%\listinginput[1]{1}{src/getspectrum.m}
 
-\section*{Приложение Д}\label{A:realaudio_nmf_post.m}
-\listinginput[1]{1}{src/realaudio_nmf_post.m}
+%\section*{Приложение Д}\label{A:realaudio_nmf_post.m}
+%\listinginput[1]{1}{src/realaudio_nmf_post.m}
 
 \end{document}
 % vi: tabstop=2 sw=2 sts=2
