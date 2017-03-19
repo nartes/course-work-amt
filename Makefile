@@ -11,6 +11,9 @@ assets-5-3: src/realaudio_nmf_post.m
 report: doc/report.tex
 	$(LATEX) $?
 
+report_pre: doc/report_pre_diploma_practice.tex
+	$(LATEX) $?
+
 report_en: doc/report_en.tex
 	$(LATEX) $?
 
