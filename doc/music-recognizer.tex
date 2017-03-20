@@ -1,7 +1,9 @@
 \section{Music Recognizer}
 
 Для лучшего тестирования было разработано веб-приложение, структурная схема
-которого представлена на Диаграмме \ref{F:6-sd}.
+которого представлена на Диаграмме \ref{F:6-sd}. Исходный код
+веб-приложения, графиков, отчёта и презентации доступен по ссылкам
+\cite{L:course-paper}, \cite{L:music-recognizer}.
 
 \begin{figure}[b]
   \centering
@@ -80,3 +82,51 @@ $A_{max}$ есть максимальная магнитуда среди пик
 
 Maher и Beauchamp предлагают следующие значения для параметров
 $p=0.5, q=1.4, r=0.5, \rho=0.33$.
+
+\subsection{Демонстрация}
+
+В системе используется реализация TWM из \cite{L:sms-tools}.
+
+Входной сигнал может поступать из:
+\begin{enumerate}
+  \item WAV аудио файла, Диаграмма \ref{F:6-2-t-y-a-f};
+  \item Комьютерного микрофона;
+  \item Микрофон браузера с клиента через веб-приложение,
+      Диаграмма \ref{F:6-2-t-y-a-m}.
+\end{enumerate}
+
+Для тестирования была использована аудиозапись \cite{L:daj-ci-boza}.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.25]{res/android-firefox-music-recognizer.png}
+  \centering
+  \caption{Скриншот веб-приложения с Android браузера}
+    \label{F:6-2-afmr}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.5]{res/daj-ci-boze-dobranoc-twm-vs-yin.png}
+  \centering
+  \caption{WAV аудио запись.
+    Сравнительная аннотация фундаментальной частоты процедуры
+    TWM с потоковым алгоритмом YIN из Aubio.
+    (Текущая реализация NMF не позволяет применение
+    к потоковой обработке и тем более к определению фундаментальной
+    частоты}
+    \label{F:6-2-t-y-a-f}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.5]{res/record-twm-vs-yin.png}
+  \centering
+  \caption{Удалённый микрофон, запись.
+    Сравнительная аннотация фундаментальной частоты процедуры
+    TWM с потоковым алгоритмом YIN из Aubio.
+    (Текущая реализация NMF не позволяет применение
+    к потоковой обработке и тем более к определению фундаментальной
+    частоты}
+    \label{F:6-2-t-y-a-m}
+\end{figure}
