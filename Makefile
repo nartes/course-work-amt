@@ -27,8 +27,8 @@ presentation: doc/presentation.tex
 realaudio-nmf-post: doc/realaudio-nmf-post.tex
 	$(LATEX) $?
 
-report_diploma: doc/report-diploma.tex
+report-diploma: doc/report-diploma.tex
 	$(LATEX) $?
 
-presentation_diploma: doc/presentation-diploma.tex
+presentation-diploma: doc/presentation-diploma.tex
 	$(LATEX) $?
